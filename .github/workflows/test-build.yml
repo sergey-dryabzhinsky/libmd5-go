@@ -78,7 +78,9 @@ jobs:
       - name: Pepare for golang-1.6 ${{matrix.os.arch}}
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt install --no-install-recommends -y ${{matrix.os.pypkg}}-dev gcc pkg-config golang-go
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt install --no-install-recommends -y gcc pkg-config golang-go
+           echo GCC; gcc -v
+           echo GO; go version
 
       - name: Make all
         if: matrix.os.matrix == 'linux'
