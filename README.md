@@ -8,6 +8,16 @@ To compile library and examples you will need to install
 - openssl >=1.0 ( libcrypto )
 - golang >=1.6
 
-## Compile
+## Prepare system
+Instructions for Debian/Ubuntu like systems:
 ```
+apt install libssl-dev
+apt install golang-go
+```
+
+## Compile
+
+If your version of go not default:
+```
+GOROOT=/path/to/golang/installdir make all GO=go-x.y
 ```
