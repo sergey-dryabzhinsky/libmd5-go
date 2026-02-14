@@ -38,7 +38,7 @@ jobs:
           sudo apt upgrade -y;
           sudo apt install -f
 
-     - name: Build source distribution with Ubuntu
+      - name: Build source distribution with Ubuntu
         if: matrix.os.matrix == 'linux'
         run: |
           sudo apt install -y debootstrap qemu-user;
