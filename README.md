@@ -21,3 +21,6 @@ If your version of go not default:
 ```
 GOROOT=/path/to/golang/installdir make all GO=go-x.y
 ```
+
+## Reson
+Not found library with only one function, so I tryed by myself.
