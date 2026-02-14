@@ -30,7 +30,7 @@ jobs:
           sudo which apt
           sudo apt update; 
           sudo apt purge -y firefox lxd snapd;
-          sudo apt install -y zram-config;
+          sudo apt install -y zram-config libssl-dev;
           sudo apt list --upgradable;
           sudo apt upgrade -y;
           sudo apt install -f
