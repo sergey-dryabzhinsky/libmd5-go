@@ -73,7 +73,7 @@ jobs:
       - name: Pepare dev files
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt install -y ssl-dev make
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt install -y libssl-dev make
 
       - name: Pepare for golang-1.6 ${{matrix.os.arch}}
         if: matrix.os.matrix == 'linux'
