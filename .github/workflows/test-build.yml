@@ -39,12 +39,12 @@ jobs:
         if: matrix.os.matrix == 'linux'
         run: |
            echo GCC; gcc -v
-           echo GO; go version
+           echo GO; go version; go env
 
       - name: Make all
         if: matrix.os.matrix == 'linux'
         run: |
-          make all
+          make lib; ls -lh .; make test_lib
 
       - name: Test lib
         if: matrix.os.matrix == 'linux'
