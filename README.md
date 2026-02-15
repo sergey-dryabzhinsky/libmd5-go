@@ -48,6 +48,15 @@ Not found library with only one function, so I tryed by myself.
 
   **since**: 0.0.2
 
+- libmd5_go__MD5File_hexdigest(char* fullPath): Return hexed-string with md5 digest.
+
+  params:
+  - text (`char *`): input full path to file as string
+
+  return: `char *` String with hexed digest, if error occured - empty string returns
+
+  **since**: 0.0.2
+
 - libmd5_go__MD5_digest(char* text): Return non hexed-string with md5 digest.
 
   params:

@@ -6,11 +6,12 @@ import (
   "crypto/md5"
   "encoding/hex"
   "io"
+  "os"
   "unsafe"
   "runtime"
 )
 
-const VERSION = "0.0.4"
+const VERSION = "0.0.5"
 
 //export libmd5_go__MD5_hexdigest
 func libmd5_go__MD5_hexdigest(inputText *C.char) *C.char {
@@ -20,6 +21,34 @@ func libmd5_go__MD5_hexdigest(inputText *C.char) *C.char {
   
     // Get the final hash as a byte slice. Passing nil appends the hash to an empty slice.
   hashInBytes := hasher.Sum(nil)
+  
+  // Convert the byte slice to a hex string
+  gohexDigest := hex.EncodeToString(hashInBytes)
+  return C.CString(gohexDigest)
+}
+
+//export libmd5_go__MD5File_hexdigest
+func libmd5_go__MD5File_hexdigest(fullPath *C.char) *C.char {
+  goFullPath := C.GoString(fullPath)
+
+  // Open the file
+  file, err := os.Open(goFullPath)
+  if err != nil {
+	return C.CString("")
+  }
+  // Ensure the file is closed after the function returns
+  defer file.Close()
+
+  hash := md5.New()          // Creates a new hash.Hash object
+  
+  // Copy the file content to the hash object.
+  // The hash object implements the io.Writer interface.
+  if _, err := io.Copy(hash, file); err != nil {
+	return C.CString("")
+  }
+
+    // Get the final hash as a byte slice. Passing nil appends the hash to an empty slice.
+  hashInBytes := hash.Sum(nil)
   
   // Convert the byte slice to a hex string
   gohexDigest := hex.EncodeToString(hashInBytes)
