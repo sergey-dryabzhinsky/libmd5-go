@@ -82,7 +82,7 @@ jobs:
            echo LD;
            sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} ld -v
            echo GO;
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} GOROOT=/opt/golang-1.6 go version
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.6 go version"
 
       - name: Run go vet
         if: matrix.os.matrix == 'linux'
