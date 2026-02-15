@@ -5,13 +5,12 @@ import "C"
 import (
   "crypto/md5"
   "encoding/hex"
-  "fmt"
   "io"
   "unsafe"
   "runtime"
 )
 
-const VERSION = "0.0.3"
+const VERSION = "0.0.4"
 
 //export libmd5_go__MD5_hexdigest
 func libmd5_go__MD5_hexdigest(inputText *C.char) *C.char {
@@ -52,7 +51,12 @@ func libmd5_go__FreeResult(ptr *C.char) {
 
 //export libmd5_go__version
 func libmd5_go__version() *C.char {
-  return C.CString(fmt.Sprintf("%s %s",VERSION, runtime.Version()))
+  return C.CString(VERSION)
+}
+
+//export libmd5_go__version_go
+func libmd5_go__version_go() *C.char {
+  return C.CString(runtime.Version())
 }
 
 func main() {}
