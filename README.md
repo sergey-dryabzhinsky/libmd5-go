@@ -1,5 +1,5 @@
 # libmd5-go
-Last version: 0.0.4
+Last version: 0.0.5
 
 Pure md5 function nothing else. Exported from golang runtime. And some examples of code.
 
@@ -55,7 +55,7 @@ Not found library with only one function, so I tryed by myself.
 
   return: `char *` String with hexed digest, if error occured - empty string returns
 
-  **since**: 0.0.2
+  **since**: 0.0.5
 
 - libmd5_go__MD5_digest(char* text): Return non hexed-string with md5 digest.
 
