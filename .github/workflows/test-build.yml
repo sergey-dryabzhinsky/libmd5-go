@@ -44,7 +44,7 @@ jobs:
       - name: Go vet
         if: matrix.os.matrix == 'linux'
         run: |
-        go vet libmd5-go.go
+          go vet libmd5-go.go
 
       - name: Make lib
         if: matrix.os.matrix == 'linux'
