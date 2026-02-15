@@ -80,7 +80,7 @@ jobs:
            echo GCC
            sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} gcc -v
            echo LD;
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}ld -v
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} ld -v
            echo GO;
            sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} go version
 
