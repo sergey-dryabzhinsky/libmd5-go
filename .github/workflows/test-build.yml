@@ -39,6 +39,7 @@ jobs:
         if: matrix.os.matrix == 'linux'
         run: |
            echo GCC; gcc -v
+           echo LD; ld -v
            echo GO; go version; go env
 
       - name: Go vet
