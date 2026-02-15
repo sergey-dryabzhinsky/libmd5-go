@@ -82,20 +82,20 @@ jobs:
            echo LD;
            sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} ld -v
            echo GO;
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} go version
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} GOROOT=/opt/golang-1.6 go version
 
       - name: Run go vet
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && go vet libmd5-go.go"
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.6 go vet libmd5-go.go"
 
       - name: Make lib
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && make lib"
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.6 GO=go-1.6 make lib"
 
       - name: Make test_lib
-        if: matrix.os.matrix == 'linux'
+        if: matrix.os.matrix == 'linux'	
         run: |
            make test_lib
            sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && make test_lib"
