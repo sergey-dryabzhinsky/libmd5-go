@@ -1,4 +1,4 @@
-name: Build l8b and tests on Ubuntu16 amd64 by golang-1.6
+name: Build lib and tests on Ubuntu16 amd64 by golang-1.6
 
 on: [push, pull_request]
 
