@@ -1,0 +1,107 @@
+name: Build l8b and tests on Ubuntu16 amd64 by golang-1.6
+
+on: [push, pull_request]
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && github.sha || '' }}
+  cancel-in-progress: true
+
+jobs:
+  build_wheels:
+    name: Build lib & tests
+    runs-on: ${{ matrix.os.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - name: Ubuntu 24+16 amd64 golang-bin-1.6
+            runs-on: ubuntu-latest
+            matrix: linux
+            arch: amd64
+            release: xenial
+            mirror: http://azure.archive.ubuntu.com/ubuntu
+            gopkg: golang-bin-1.6-go
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Update and upgrade Ubuntu 24
+        if: matrix.os.matrix == 'linux'
+        run: |
+          sudo which apt
+          sudo apt update; 
+          sudo apt purge -y firefox lxd snapd;
+          sudo apt install -y zram-config debootstrap;
+          sudo apt list --upgradable;
+          sudo apt upgrade -y;
+          sudo apt install -f
+
+      - name: Debootstrap Ubuntu ${{matrix.os.release}} ${{matrix.os.arch}}
+        if: matrix.os.matrix == 'linux'
+        run: |
+          sudo debootstrap --no-merged-usr --verbose --include=sudo,wget,curl,gnupg,ca-certificates --arch=${{matrix.os.arch}} ${{matrix.os.release}} ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} ${{matrix.os.mirror}} || tail ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/debootstrap/debootstrap.log
+
+      - name: Update and Upgrade Ubuntu ${{matrix.os.release}}
+        if: matrix.os.matrix == 'linux'
+        run: |
+          sudo mkdir -p ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/build_wheel
+          sudo mount none ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/proc -t proc
+          sudo mount none ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/dev/pts -t devpts
+          sudo mount none ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/sys -t sysfs
+          echo " deb [trusted=yes] http://packages.rusoft.ru/ppa/rusoft/go ubuntu-${{matrix.os.release}} main" > rusoft-go.list
+          echo " deb [trusted=yes] http://packages.rusoft.ru/ppa/rusoft/backports ubuntu-${{matrix.os.release}} main" > rusoft-backports.list
+          echo " deb [trusted=yes] http://packages.rusoft.ru/ppa/rusoft/packages ubuntu-${{matrix.os.release}} main" > rusoft-packages.list
+          sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt update
+          sudo cp -v ./*.list ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/etc/apt/sources.list.d
+          sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c 'cd /etc/apt/trusted.gpg.d && wget http://packages.rusoft.ru/apt/public.gpg -Orusoft.gpg'
+          sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c 'cd /etc/apt/trusted.gpg.d && wget http://packages.rusoft.ru/apt/public-old.gpg -Orusoft-old.gpg'
+          sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c 'apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys A2CE4BCCC50209DD || true'
+          sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt update
+          sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt dist-upgrade -y
+          sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt -fy install
+          sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt upgrade -y
+
+      - name: Pepare dev tools for ${{matrix.os.gopkg}} ${{matrix.os.arch}}
+        if: matrix.os.matrix == 'linux'
+        run: |
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt install -y gcc pkg-config ${{matrix.os.pypkg}} make
+
+      - name: Pepare dev files
+        if: matrix.os.matrix == 'linux'
+        run: |
+           sudo mkdir -p ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/build
+           sudo cp -vrp * ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/build
+
+      - name: Get gcc, ld, go versions
+        if: matrix.os.matrix == 'linux'
+        run: |
+           echo GCC
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} gcc -v
+           echo LD;
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}ld -v
+           echo GO;
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} go version
+
+      - name: Run go vet
+        if: matrix.os.matrix == 'linux'
+        run: |
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && go vet libmd5-go.go"
+
+      - name: Make lib
+        if: matrix.os.matrix == 'linux'
+        run: |
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && make lib"
+
+      - name: Make test_lib
+        if: matrix.os.matrix == 'linux'
+        run: |
+           make test_lib
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && make test_lib"
+
+      - name: Make tests
+        if: matrix.os.matrix == 'linux'
+        run: |
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && make tests"
+
