@@ -44,7 +44,7 @@ jobs:
       - name: Make all
         if: matrix.os.matrix == 'linux'
         run: |
-          make lib; ls -lh .; make test_lib
+          make lib; ls -lh .; echo "HEADER";cat libmd5-go.h; make test_lib
 
       - name: Test lib
         if: matrix.os.matrix == 'linux'
