@@ -41,6 +41,11 @@ jobs:
            echo GCC; gcc -v
            echo GO; go version; go env
 
+      - name: Go vet
+        if: matrix.os.matrix == 'linux'
+        run: |
+        go vet libmd5-go.go
+
       - name: Make lib
         if: matrix.os.matrix == 'linux'
         run: |
