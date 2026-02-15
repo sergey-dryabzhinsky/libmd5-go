@@ -1,4 +1,4 @@
-name: Build to test with golang-1.24
+name: Build lib on Ubuntu24 amd64 with golang-1.24
 
 on: [push, pull_request]
 
@@ -41,7 +41,7 @@ jobs:
            echo GCC; gcc -v
            echo GO; go version; go env
 
-      - name: Make all
+      - name: Make lib
         if: matrix.os.matrix == 'linux'
         run: |
           make lib; ls -lh .; echo "HEADER";cat libmd5-go.h

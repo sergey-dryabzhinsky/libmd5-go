@@ -1,9 +1,20 @@
+#!/usr/bin/make -f
 .PHONY: all lib test_lib clean install
+VERBOSE?=1
+DEBUG?=1
 
 GO?=go
 CC?=gcc
 #linux
 CFLAGS?=-O2
+GOFLAGS?=-a
+ifeq (1,$(DEBUG))
+CFLAGS+=-Wall -Werror
+endif
+ifeq (1,$(VERBOSE))
+CFLAGS+=-v
+GOFLAGS+=-v
+endif
 LDFLAGS?=-Wl,-s
 GOLDFLAGS?=-ldflags="-s -w" -trimpath
 LIBEXT?=.so
@@ -17,7 +28,7 @@ INCLUDES_DIR?=/include
 LIBS_DIR?=/lib
 
 $(LIBNAME)$(LIBEXT):
-	$(GO) build -v -a $(GOLDFLAGS) -o $(LIBNAME)$(LIBEXT) -buildmode=c-shared $(LIBNAME).go
+	$(GO) build $(GOFLAGS) $(GOLDFLAGS) -o $(LIBNAME)$(LIBEXT) -buildmode=c-shared $(LIBNAME).go
 
 lib: $(LIBNAME)$(LIBEXT)
 	mv $(LIBNAME)$(LIBEXT) $(LIBNAME)$(LIBEXT).$(VERSION)
