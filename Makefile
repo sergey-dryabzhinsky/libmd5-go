@@ -31,8 +31,9 @@ $(LIBNAME)$(LIBEXT):
 	$(GO) build $(GOFLAGS) $(GOLDFLAGS) -o $(LIBNAME)$(LIBEXT) -buildmode=c-shared $(LIBNAME).go
 
 lib: $(LIBNAME)$(LIBEXT)
-	mv $(LIBNAME)$(LIBEXT) $(LIBNAME)$(LIBEXT).$(VERSION)
-	ln -snf $(LIBNAME)$(LIBEXT).$(VERSION) $(LIBNAME)$(LIBEXT)
+# gcc do not work with links,need real file
+#	mv $(LIBNAME)$(LIBEXT) $(LIBNAME)$(LIBEXT).$(VERSION)
+#	ln -snf $(LIBNAME)$(LIBEXT).$(VERSION) $(LIBNAME)$(LIBEXT)
 
 test_lib: lib
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib  ./$(LIBNAME)$(LIBEXT) test-lib.c
