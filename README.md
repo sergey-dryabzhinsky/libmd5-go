@@ -1,4 +1,5 @@
 # libmd5-go
+Last version: 0.0.3
 
 Pure md5 function nothing else. Exported from golang runtime. And some examples of code.
 
@@ -27,17 +28,31 @@ Not found library with only one function, so I tryed by myself.
 
 ## API
 - libmd5_go__version(void): Returns doted version string.
+
   return: `* char`
+
   **since**: 0.0.1
 
 - libmd5_go__MD5_hexdigest(char* text): Return hexed-string with md5 digest.
+
   params:
   - text (`char *`): input string
-  retutn: `char *` String with hexed digest
+
+  return: `char *` String with hexed digest
+
   **since**: 0.0.2
 
 - libmd5_go__MD5_digest(char* text): Return non hexed-string with md5 digest.
+
   params:
   - text (`char *`): input string
-  retutn: `char *` Bytes array, char string with digest
+
+  return: `char *` Bytes array, char string with digest
+
   **since**: 0.0.2
+
+- libmd5_go__FreeResult(char* ptr): frees memory allocated for md5 degest earlier.
+
+  return: `void`
+
+ b**since**: 0.0.3
