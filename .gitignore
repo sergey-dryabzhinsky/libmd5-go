@@ -5,4 +5,5 @@
 /include/libmd5-go.h
 /test-lib
 /test-lib-speed
+/test-lib-file
 /test-crypto-speed
