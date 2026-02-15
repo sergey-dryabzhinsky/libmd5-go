@@ -49,6 +49,12 @@ jobs:
       - name: Make test_lib
         if: matrix.os.matrix == 'linux'
         run: |
+          make lib
+          ls -lh libmd5-go*
+
+      - name: Make test_lib
+        if: matrix.os.matrix == 'linux'
+        run: |
           make test_lib
 
       - name: Make tests
