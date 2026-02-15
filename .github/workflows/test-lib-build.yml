@@ -1,0 +1,48 @@
+name: Build lib and test on Ubuntu24 amd64 with golang-1.24
+
+on: [push, pull_request]
+
+concurrency:
+  group: ${{ github.ref }}-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && github.sha || '' }}
+  cancel-in-progress: true
+
+jobs:
+  build_wheels:
+    name: Build lib
+    runs-on: ${{ matrix.os.runs-on }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - name: Ubuntu 24 amd64 golang-1.24
+            runs-on: ubuntu-latest
+            matrix: linux
+            mirror: http://azure.archive.ubuntu.com/ubuntu
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: 'recursive'
+
+      - name: Update and upgrade Ubuntu 24
+        if: matrix.os.matrix == 'linux'
+        run: |
+          sudo which apt
+          sudo apt update; 
+          sudo apt purge -y firefox lxd snapd;
+          sudo apt install -y zram-config libssl-dev;
+          sudo apt list --upgradable;
+          sudo apt upgrade -y;
+          sudo apt install -f
+
+      - name: echo versions gcc+go
+        if: matrix.os.matrix == 'linux'
+        run: |
+           echo GCC; gcc -v
+           echo GO; go version; go env
+
+      - name: Make test_lib
+        if: matrix.os.matrix == 'linux'
+        run: |
+          make test_lib
+
