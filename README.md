@@ -1,5 +1,5 @@
 # libmd5-go
-Last version: 0.0.3
+Last version: 0.0.4
 
 Pure md5 function nothing else. Exported from golang runtime. And some examples of code.
 
@@ -32,6 +32,12 @@ Not found library with only one function, so I tryed by myself.
   return: `* char`
 
   **since**: 0.0.1
+
+- libmd5_go__version_go(void): Returns version string of go rutime used.
+
+  return: `* char`
+
+  **since**: 0.0.4
 
 - libmd5_go__MD5_hexdigest(char* text): Return hexed-string with md5 digest.
 

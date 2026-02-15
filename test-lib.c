@@ -4,6 +4,7 @@
 
 int main(int argc,char **argv){
   printf("libmd5-go version: %s\n", libmd5_go__version());
+  printf("go runtime version used: %s\n", libmd5_go__version_go());
   char* dgst;
   dgst = libmd5_go__MD5_hexdigest("123");
   printf("md5(123):%s\n", dgst);
