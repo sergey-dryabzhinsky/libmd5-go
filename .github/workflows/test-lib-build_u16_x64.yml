@@ -72,7 +72,7 @@ jobs:
         if: matrix.os.matrix == 'linux'
         run: |
            sudo mkdir -p ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/build
-           sudo cp -vrp * ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/build
+           sudo cp -v Makefile libmd5-go.go test*.c ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/build
 
       - name: Get gcc, ld, go versions
         if: matrix.os.matrix == 'linux'
