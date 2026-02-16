@@ -31,13 +31,13 @@ Not found library with only one function, so I tryed by myself.
 
   return: `* char`
 
-  //since//: 0.0.1
+  *since*: 0.0.1
 
 - **libmd5_go__version_go**(void): Returns version string of go rutime used.
 
   return: `* char`
 
-  //since//: 0.0.4
+  *since*: 0.0.4
 
 - **libmd5_go__MD5_hexdigest**(char* text): Return hexed-string with md5 digest.
 
@@ -46,7 +46,7 @@ Not found library with only one function, so I tryed by myself.
 
   return: `char *` String with hexed digest
 
-  //since//: 0.0.2
+  *since*: 0.0.2
 
 - **libmd5_go__MD5File_hexdigest**(char* fullPath): Return hexed-string with md5 digest of contents of the file.
 
@@ -55,7 +55,7 @@ Not found library with only one function, so I tryed by myself.
 
   return: `char *` String with hexed digest, if error occured - empty string returns
 
-  //since//: 0.0.5
+  *since*: 0.0.5
 
 - **libmd5_go__MD5_digest**(char* text): Return non hexed(byte)-string with md5 digest.
 
@@ -64,10 +64,10 @@ Not found library with only one function, so I tryed by myself.
 
   return: `char *` Bytes array, char string with digest
 
-  //since//: 0.0.2
+  *since*: 0.0.2
 
 - **libmd5_go__FreeResult**(char* ptr): frees memory allocated for md5 degest earlier.
 
   return: `void`
 
-  //since//: 0.0.3
+  *since*: 0.0.3
