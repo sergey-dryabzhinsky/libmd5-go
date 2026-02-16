@@ -12,6 +12,7 @@ To compile library and examples you will need to install
 ## Prepare system
 Instructions for Debian/Ubuntu like systems:
 ```
+apt install build-essential
 apt install libssl-dev
 apt install golang-go
 ```
@@ -20,7 +21,7 @@ apt install golang-go
 
 If your version of go not default:
 ```
-GOROOT=/path/to/golang/installdir make all GO=go-x.y
+GOROOT=/path/to/golang/installdir GO=go-x.y make lib
 ```
 
 ## Reason
