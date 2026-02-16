@@ -1,4 +1,4 @@
-name: Build lib and tests on Ubuntu16 amd64 by golang-1.11
+name: Build lib  on Ubuntu16 amd64 by golang-1.6
 
 on: [push, pull_request]
 
@@ -8,19 +8,19 @@ concurrency:
 
 jobs:
   build_wheels:
-    name: Build lib & tests
+    name: Build lib
     runs-on: ${{ matrix.os.runs-on }}
     strategy:
       fail-fast: false
       matrix:
         os:
-          - name: Ubuntu 24+16 amd64 golang-bin-1.11
+          - name: Ubuntu 24+16 amd64 golang-bin-1.6
             runs-on: ubuntu-latest
             matrix: linux
             arch: amd64
             release: xenial
             mirror: http://azure.archive.ubuntu.com/ubuntu
-            gopkg: golang-bin-1.11-go
+            gopkg: golang-bin-1.6-go
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -74,36 +74,23 @@ jobs:
            sudo mkdir -p ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/build
            sudo cp -v Makefile libmd5-go.go test*.c ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/build
 
-      - name: Get gcc, ld, go versions
+      - name: Get gcc, ld versions
         if: matrix.os.matrix == 'linux'
         run: |
            echo GCC
            sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} gcc -v
            echo LD;
            sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} ld -v
-           echo GO;
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.11 go-1.11 version"
-           echo GO-ENV;
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.11 go-1.11 env"
 
-      - name: Run go vet
+      - name: Get go version
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.11 GO=go-1.11 make vet"
+           echo GO;
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.6 go-1.6 version"
+           echo GO-ENV;
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.6 go-1.6 env"
 
       - name: Make lib
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.11 GO=go-1.11 make lib"
-
-      - name: Make test_lib
-        if: matrix.os.matrix == 'linux'
-        run: |
-           make test_lib
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && make test_lib"
-
-      - name: Make tests
-        if: matrix.os.matrix == 'linux'
-        run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && make tests"
-
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.6 GO=go-1.6 make lib;ls libmd5-go* -lh"

@@ -1,4 +1,4 @@
-name: Build lib and tests on Ubuntu16 i386 by golang-1.6
+name: Build lib and tests on Ubuntu16 i386 by golang-1.11
 
 on: [push, pull_request]
 
@@ -14,13 +14,13 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - name: Ubuntu 24+16 i386 golang-bin-1.6
+          - name: Ubuntu 24+16 i386 golang-bin-1.11
             runs-on: ubuntu-latest
             matrix: linux
             arch: i386
             release: xenial
             mirror: http://azure.archive.ubuntu.com/ubuntu
-            gopkg: golang-bin-1.6-go
+            gopkg: golang-bin-1.11-go
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -82,17 +82,19 @@ jobs:
            echo LD;
            sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} ld -v
            echo GO;
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.6 go-1.6 version"
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.11 go-1.11 version"
+           echo GO-ENV
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.11 go-1.11 env"
 
       - name: Run go vet
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.6 go-1.6 vet libmd5-go.go"
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.11 GO=go-1.11 make vet"
 
       - name: Make lib
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.6 GO=go-1.6 make lib"
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.11 GO=go-1.11 make lib"
 
       - name: Make test_lib
         if: matrix.os.matrix == 'linux'	
