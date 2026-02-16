@@ -4,6 +4,7 @@
 /libmd5-go.h
 /include/libmd5-go.h
 /go.mod
+/go.sum
 /test-lib
 /test-lib-speed
 /test-lib-file
