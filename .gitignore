@@ -3,6 +3,7 @@
 /lib/libmd5-go.so*
 /libmd5-go.h
 /include/libmd5-go.h
+/go.mod
 /test-lib
 /test-lib-speed
 /test-lib-file

@@ -16,17 +16,23 @@ CFLAGS+=-v
 GOFLAGS+=-v
 endif
 LDFLAGS?=-Wl,-s
-GOLDFLAGS?=-ldflags="-s -w" -trimpath
+GOLDFLAGS?=-ldflags="-s -w"
 LIBEXT?=.so
 LIBNAME=libmd5-go
 ldLIBNAME=md5-go
 VERSION=0.0.5
-#VERSION=$(shell grep 'const VERSION' $(LIBNAME).go | cut -d= -f2|tr -d '"')
+VERSION=$(shell grep 'const VERSION' $(LIBNAME).go | cut -d= -f2|tr -d '"')
+ifeq (1,$(DEBUG))
+$(info libmd5-go version:$(VERSION))
+endif
 
 INSTALL_ROOT?=/
 PREFIX?=/usr/local
 INCLUDES_DIR?=/include
 LIBS_DIR?=/lib
+
+vet:
+	$(GO) vet $(LIBNAME).go
 
 $(LIBNAME)$(LIBEXT):
 	$(GO) build $(GOFLAGS) $(GOLDFLAGS) -o $(LIBNAME)$(LIBEXT) -buildmode=c-shared $(LIBNAME).go
