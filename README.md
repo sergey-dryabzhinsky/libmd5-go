@@ -26,6 +26,10 @@ GOROOT=/path/to/golang/installdir make all GO=go-x.y
 ## Reason
 Not found library with only one function, so I tryed by myself.
 
+## Result
+Slightly faster file reading than `md5sum` command.
+But more memory consuming.
+
 ## API
 - **libmd5_go__version**(void): Returns doted version string.
 
