@@ -16,12 +16,12 @@ CFLAGS+=-v
 GOFLAGS+=-v
 endif
 LDFLAGS?=-Wl,-s
-GOLDFLAGS?=-ldflags="-s -w"
 LIBEXT?=.so
 LIBNAME=libmd5-go
 ldLIBNAME=md5-go
-VERSION=0.0.5
-VERSION=$(shell grep 'const VERSION' $(LIBNAME).go | cut -d= -f2|tr -d '"')
+VERSION?=0.0.6
+GOLDFLAGS?=-ldflags="-s -w" -ldflags "-X main.VERSION=$(VERSION)"
+#VERSION=$(shell grep 'const VERSION' $(LIBNAME).go | cut -d= -f2|tr -d '"')
 ifeq (1,$(DEBUG))
 $(info libmd5-go version:$(VERSION))
 endif
@@ -38,16 +38,29 @@ $(LIBNAME)$(LIBEXT):
 	$(GO) build $(GOFLAGS) $(GOLDFLAGS) -o $(LIBNAME)$(LIBEXT) -buildmode=c-shared $(LIBNAME).go
 
 lib: $(LIBNAME)$(LIBEXT)
-#	mv $(LIBNAME)$(LIBEXT) $(LIBNAME)$(LIBEXT).$(VERSION)
-#	ln -snf $(LIBNAME)$(LIBEXT).$(VERSION) $(LIBNAME)$(LIBEXT)
 
-test_lib: lib
+lib-link: lib
+	test ! -r $(LIBNAME)$(LIBEXT).$(VERSION) && mv $(LIBNAME)$(LIBEXT) $(LIBNAME)$(LIBEXT).$(VERSION)
+	test ! -e $(LIBNAME)$(LIBEXT) && ln -snf $(LIBNAME)$(LIBEXT).$(VERSION) $(LIBNAME)$(LIBEXT)
+	touch lib-link
+
+test-lib: lib-link
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib -L. -l$(ldLIBNAME) test-lib.c
+
+test-lib-speed: lib-link
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib-speed -L. -l$(ldLIBNAME) test-lib-speed.c
+
+test-lib-file: lib
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib-file -L. $(ldLIBNAME) test-lib-file.c
+
+test-crypto-speed: lib
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-crypto-speed  -lcrypto test-crypto-speed.c
 
-tests: test_lib
+tests: \
+ test-lib \
+ test-lib-speed \
+ test-lib-file \
+ test-crypto-speed
 	 export LD_LIBRARY_PATH=.
 	./test-lib
 	./test-lib-file
@@ -56,7 +69,7 @@ tests: test_lib
 	./test-crypto-speed
 
 clean:
-	rm -f  $(LIBNAME)$(LIBEXT)* $(LIBNAME).h
+	rm -f  $(LIBNAME)$(LIBEXT)* $(LIBNAME).h lib-link
 	rm -f test-lib test-lib-speed test-crypto-speed test-lib-file
 
 all: test_lib

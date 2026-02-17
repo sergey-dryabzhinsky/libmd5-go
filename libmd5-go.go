@@ -11,7 +11,7 @@ import (
 	"unsafe"
 )
 
-const VERSION = "0.0.5"
+var VERSION string
 
 //export libmd5_go__MD5_hexdigest
 func libmd5_go__MD5_hexdigest(inputText *C.char) *C.char {
