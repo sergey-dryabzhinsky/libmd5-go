@@ -1,5 +1,5 @@
 # libmd5-go
-Last version: 0.0.5
+Last version: 0.0.6
 
 Pure md5 function nothing else. Exported from golang runtime. And some examples of code.
 
