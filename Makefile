@@ -26,10 +26,11 @@ ifeq (1,$(DEBUG))
 $(info libmd5-go version:$(VERSION))
 endif
 
-INSTALL_ROOT?=/
+INSTALL_ROOT?=./tmp/
 PREFIX?=/usr/local
-INCLUDES_DIR?=/include
-LIBS_DIR?=/lib
+INCLUDES_DIR?=include
+MULTIARCH?=$(shell uname -m)-linux-gnu
+LIBS_DIR?=lib/$(MULTIARCH)
 
 vet:
 	$(GO) vet $(LIBNAME).go
@@ -37,7 +38,16 @@ vet:
 $(LIBNAME)$(LIBEXT):
 	$(GO) build $(GOFLAGS) $(GOLDFLAGS) -o $(LIBNAME)$(LIBEXT) -buildmode=c-shared $(LIBNAME).go
 
-lib: $(LIBNAME)$(LIBEXT)
+$(ldLIBNAME).pc:
+	m4 \
+ -DVERSION=$(VERSION) \
+ -DMULTIARCH=$(MULTIARCH) \
+ -DPREFIX=$(PREFIX) \
+ -DLIBS_DIR=$(LIBS_DIR) \
+ -DINCLUDES_DIR=$(INCLUDES_DIR) \
+	 $(ldLIBNAME).pc.in > $(ldLIBNAME).pc
+
+lib: $(LIBNAME)$(LIBEXT) $(ldLIBNAME).pc
 
 lib-link: lib
 	test ! -r $(LIBNAME)$(LIBEXT).$(VERSION) && mv $(LIBNAME)$(LIBEXT) $(LIBNAME)$(LIBEXT).$(VERSION)
@@ -69,7 +79,7 @@ tests: \
 	./test-crypto-speed
 
 clean:
-	rm -f  $(LIBNAME)$(LIBEXT)* $(LIBNAME).h lib-link
+	rm -f  $(LIBNAME)$(LIBEXT)* $(LIBNAME).h $(ldLIBNAME).pc lib-link
 	rm -f test-lib test-lib-speed test-crypto-speed test-lib-file
 
 all: test_lib

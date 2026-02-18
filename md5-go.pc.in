@@ -1,0 +1,10 @@
+prefix=PREFIX
+exec_prefix=${prefix}
+libdir=${exec_prefix}/LIBS_DIR
+includedir=${prefix}/INCLUDES_DIR
+
+Name: LibMD5-Go
+Description: Secure Sockets Layer and cryptography libraries
+Version: VERSION
+Libs: -L${libdir} -lmd5-go
+Cflags: -I${includedir}
