@@ -54,7 +54,7 @@ constants.h:
 lib: $(LIBNAME)$(LIBEXT) $(ldLIBNAME).pc constants.h
 
 lib-link: lib
-	test ! -r $(LIBNAME)$(LIBEXT).$(VERSION) && mv $(LIBNAME)$(LIBEXT) $(LIBNAME)$(LIBEXT).$(VERSION)
+	test ! -e $(LIBNAME)$(LIBEXT).$(VERSION) && mv $(LIBNAME)$(LIBEXT) $(LIBNAME)$(LIBEXT).$(VERSION)
 	test ! -e $(LIBNAME)$(LIBEXT) && ln -snf $(LIBNAME)$(LIBEXT).$(VERSION) $(LIBNAME)$(LIBEXT)
 	touch lib-link
 
