@@ -13,7 +13,7 @@ int main(int argc,char **argv){
   libmd5_go__FreeResult(dgst);
   // NoThread Safe variant
   libmd5_go_nts__MD5_init();
-  int updated = *libmd5_go_nts__MD5_update("123");
+  int updated = libmd5_go_nts__MD5_update("123");
   printf("md5 updated?:%d\n", updated);
   dgst = libmd5_go_nts__MD5_finish();
   printf("md5(123):%s\n", dgst);

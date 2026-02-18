@@ -37,29 +37,29 @@ func libmd5_go_ts__MD5_init() {
 }
 
 //export libmd5_go_nts__MD5_update
-func libmd5_go_nts__MD5_update(inputText *C.char) *C.int {
+func libmd5_go_nts__MD5_update(inputText *C.char) C.int {
 	goText := C.GoString(inputText)
 	if commonHasher == nil {
 		result := C.int(0)
-		return &result
+		return result
 	}
 	io.WriteString(commonHasher, goText) // Writes the string data to the hasher
 	result := C.int(1)
-	return &result
+	return result
 }
 
 //export libmd5_go_ts__MD5_update
-func libmd5_go_ts__MD5_update(inputText *C.char) *C.int {
+func libmd5_go_ts__MD5_update(inputText *C.char) C.int {
 	goText := C.GoString(inputText)
 	commonL.Lock()
 	if commonHasher == nil {
 		result := C.int(0)
-		return &result
+		return result
 	}
 	io.WriteString(commonHasher, goText) // Writes the string data to the hasher
 	commonL.Unlock()
 	result := C.int(1)
-	return &result
+	return result
 }
 
 //export libmd5_go_nts__MD5_finish
