@@ -6,6 +6,7 @@
 /go.mod
 /go.sum
 /md5-go.pc
+/constants.h
 /test-lib
 /test-lib-speed
 /test-lib-file
