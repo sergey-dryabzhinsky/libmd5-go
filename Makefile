@@ -28,14 +28,14 @@ endif
 
 INSTALL_ROOT?=./tmp/
 PREFIX?=/usr/local
-INCLUDES_DIR?=include
+INCLUDES_DIR?=include/libmd5-go
 MULTIARCH?=$(shell uname -m)-linux-gnu
 LIBS_DIR?=lib/$(MULTIARCH)
 
 vet:
 	$(GO) vet $(LIBNAME).go
 
-$(LIBNAME)$(LIBEXT):
+$(LIBNAME)$(LIBEXT): constants.h
 	$(GO) build $(GOFLAGS) $(GOLDFLAGS) -o $(LIBNAME)$(LIBEXT) -buildmode=c-shared $(LIBNAME).go
 
 $(ldLIBNAME).pc:
@@ -47,7 +47,11 @@ $(ldLIBNAME).pc:
  -DINCLUDES_DIR=$(INCLUDES_DIR) \
 	 $(ldLIBNAME).pc.in > $(ldLIBNAME).pc
 
-lib: $(LIBNAME)$(LIBEXT) $(ldLIBNAME).pc
+constants.h:
+	sed -e 's#VERSION#$(VERSION)#g' \
+	constants.h.in > constants.h
+
+lib: $(LIBNAME)$(LIBEXT) $(ldLIBNAME).pc constants.h
 
 lib-link: lib
 	test ! -r $(LIBNAME)$(LIBEXT).$(VERSION) && mv $(LIBNAME)$(LIBEXT) $(LIBNAME)$(LIBEXT).$(VERSION)
@@ -55,13 +59,13 @@ lib-link: lib
 	touch lib-link
 
 test-lib: lib-link
-	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib -L. -l$(ldLIBNAME) test-lib.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib -I. -L. -l$(ldLIBNAME) test-lib.c
 
 test-lib-speed: lib-link
-	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib-speed -L. -l$(ldLIBNAME) test-lib-speed.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib-speed -I. -L. -l$(ldLIBNAME) test-lib-speed.c
 
 test-lib-file: lib
-	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib-file -L. $(ldLIBNAME) test-lib-file.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib-file -I. -L. $(ldLIBNAME) test-lib-file.c
 
 test-crypto-speed: lib
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-crypto-speed  -lcrypto test-crypto-speed.c
@@ -79,7 +83,7 @@ tests: \
 	./test-crypto-speed
 
 clean:
-	rm -f  $(LIBNAME)$(LIBEXT)* $(LIBNAME).h $(ldLIBNAME).pc lib-link
+	rm -f  $(LIBNAME)$(LIBEXT)* $(LIBNAME).h constants.h $(ldLIBNAME).pc lib-link
 	rm -f test-lib test-lib-speed test-crypto-speed test-lib-file
 
 all: test_lib

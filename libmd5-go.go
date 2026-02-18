@@ -1,17 +1,40 @@
 package main
 
+// #include <constants.h>
 // #include <stdlib.h>
 import "C"
 import (
 	"crypto/md5"
 	"encoding/hex"
 	"io"
+	"hash"
 	"os"
+	"sync"
 	"runtime"
 	"unsafe"
 )
 
 var VERSION string
+var commonL sync.Mutex
+var commonHasher hash.Hash
+
+//export libmd5_go_nts__MD5_init
+func libmd5_go_nts__MD5_init() {
+	if commonHasher != nil {
+		commonHasher = nil
+	}
+	commonHasher = md5.New()            // Creates a new hash.Hash object
+}
+
+//export libmd5_go_ts__MD5_init
+func libmd5_go_ts__MD5_init() {
+	commonL.Lock()
+	if commonHasher != nil {
+		commonHasher = nil
+	}
+	commonHasher = md5.New()            // Creates a new hash.Hash object
+	commonL.Unlock()
+}
 
 //export libmd5_go__MD5_hexdigest
 func libmd5_go__MD5_hexdigest(inputText *C.char) *C.char {
