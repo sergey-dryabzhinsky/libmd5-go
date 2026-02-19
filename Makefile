@@ -20,13 +20,21 @@ LIBEXT?=.so
 LIBNAME=libmd5-go
 ldLIBNAME=md5-go
 VERSION?=0.0.6
+goVERSION?=$(shell $(GO) version | cut -d' ' -f3)
 GOLDFLAGS?=-ldflags="-s -w" -ldflags "-X main.VERSION=$(VERSION)"
 #VERSION=$(shell grep 'const VERSION' $(LIBNAME).go | cut -d= -f2|tr -d '"')
 ifeq (1,$(DEBUG))
-$(info libmd5-go version:$(VERSION))
+$(info $(LIBNAME) version:$(VERSION))
+$(info go version:$(goVERSION))
 endif
-
-INSTALL_ROOT?=./tmp/
+TARFLAGS?=-v --xz
+TARNAME?=$(LIBNAME)-$(goVERSION).tar.xz
+INSTALL_ROOT?=./tmp
+DIST_DIR?=./dist/
+INSTALL_VERBOSE=
+ifeq (1,$(VERBOSE))
+INSTALL_VERBOSE=-v
+endif
 PREFIX?=/usr/local
 INCLUDES_DIR?=include/libmd5-go
 MULTIARCH?=$(shell uname -m)-linux-gnu
@@ -85,5 +93,17 @@ tests: \
 clean:
 	rm -f  $(LIBNAME)$(LIBEXT)* $(LIBNAME).h constants.h $(ldLIBNAME).pc lib-link
 	rm -f test-lib test-lib-speed test-crypto-speed test-lib-file
+	rm -rf tmp dist
 
 all: test_lib
+
+install: lib lib-link
+	install $(INSTALL_VERBOSE) -d $(INSTALL_ROOT)/$(PREFIX)/$(INCLUDES_DIR)
+	install $(INSTALL_VERBOSE) $(LIBNAME).h $(INSTALL_ROOT)/$(PREFIX)/$(INCLUDES_DIR)
+	install $(INSTALL_VERBOSE) -d $(INSTALL_ROOT)/$(PREFIX)/$(LIBS_DIR)/pkgconfig
+	install $(INSTALL_VERBOSE) $(ldLIBNAME).pc $(INSTALL_ROOT)/$(PREFIX)/$(LIBS_DIR)/pkgconfig
+	install $(INSTALL_VERBOSE) $(LIBNAME)$(LIBEXT)* $(INSTALL_ROOT)/$(PREFIX)/$(LIBS_DIR)
+
+tar: install
+	mkdir -p $(DIST_DIR)
+	cd $(INSTALL_ROOT) && tar $(TARFLAGS) -cf ../$(DIST_DIR)/$(TARNAME) .
