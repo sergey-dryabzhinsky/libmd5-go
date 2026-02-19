@@ -111,3 +111,11 @@ jobs:
         with:
           name: go-1.06-x86-build
           path: dist/
+
+      - name: Create Release and Upload Assets
+        # This uses a community action for creating and uploading to a release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*86*.tar.xz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # The default GITHUB_TOKEN has sufficient permissions
