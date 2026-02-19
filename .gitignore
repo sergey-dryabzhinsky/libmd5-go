@@ -12,5 +12,7 @@
 /test-lib-file
 /test-crypto-speed
 /dist
+/dist/*
 /tmp
+/tmp/*
 /*.tar.*
