@@ -72,7 +72,7 @@ jobs:
         if: matrix.os.matrix == 'linux'
         run: |
            sudo mkdir -p ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/build
-           sudo cp -v Makefile libmd5-go.go test*.c ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/build
+           sudo cp -v Makefile libmd5-go.go test*.c *.in ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/build
 
       - name: Get gcc, ld versions
         if: matrix.os.matrix == 'linux'
@@ -94,3 +94,14 @@ jobs:
         if: matrix.os.matrix == 'linux'
         run: |
            sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.11 GO=go-1.11 make lib;ls libmd5-go* -lh"
+
+      - name: Make tar
+        if: matrix.os.matrix == 'linux'
+        run: |
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.11 GO=go-1.11 make tar"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: go-1.11-x86-build
+          path: dist/
