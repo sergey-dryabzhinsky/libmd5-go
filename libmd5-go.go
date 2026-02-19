@@ -1,6 +1,6 @@
 package main
 
-// #include <constants.h>
+// #include "constants.h"
 // #include <stdlib.h>
 import "C"
 import (
