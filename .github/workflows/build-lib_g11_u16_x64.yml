@@ -66,7 +66,7 @@ jobs:
       - name: Pepare dev tools for ${{matrix.os.gopkg}} ${{matrix.os.arch}}
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt install  --no-install-recommends -y gcc pkg-config ${{matrix.os.gopkg}} build-essential
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt install  --no-install-recommends -y gcc pkg-config ${{matrix.os.gopkg}} build-essential tar xz-utils
 
       - name: Pepare dev files
         if: matrix.os.matrix == 'linux'
@@ -94,3 +94,19 @@ jobs:
         if: matrix.os.matrix == 'linux'
         run: |
            sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.11 GO=go-1.11 make lib;ls libmd5-go* -lh"
+
+      - name: Make tar
+        if: matrix.os.matrix == 'linux'
+        run: |
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.11 GO=go-1.11 make tar;ls dist -lh"
+
+      - name: Prepare tar to publish
+        if: matrix.os.matrix == 'linux'
+        run: |
+          mkdir -p dist && cp -v ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/build/dist/*tar* ./dist/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: go-1.11-amd64-build
+          path: dist/
