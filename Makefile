@@ -33,7 +33,7 @@ MACHINE=amd64
 #$(info amd64)
 endif
 TARFLAGS?=-v --xz
-TARNAME?=$(LIBNAME)-$(goVERSION)_$(MACHINE).tar.xz
+TARNAME?=$(LIBNAME)-$(goVERSION)_$(VERSION)_$(MACHINE).tar.xz
 $(info Tar name will be: $(TARNAME))
 INSTALL_ROOT?=./tmp
 DIST_DIR?=./dist/
