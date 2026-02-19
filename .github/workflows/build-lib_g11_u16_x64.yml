@@ -66,7 +66,7 @@ jobs:
       - name: Pepare dev tools for ${{matrix.os.gopkg}} ${{matrix.os.arch}}
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt install  --no-install-recommends -y gcc pkg-config ${{matrix.os.gopkg}} build-essential tar xz-utils
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt install  --no-install-recommends -y gcc pkg-config ${{matrix.os.gopkg}} build-essential tar xz-utils m4
 
       - name: Pepare dev files
         if: matrix.os.matrix == 'linux'

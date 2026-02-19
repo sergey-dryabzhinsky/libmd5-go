@@ -12,7 +12,7 @@ To compile library and examples you will need to install
 ## Prepare system
 Instructions for Debian/Ubuntu like systems:
 ```
-apt install build-essential
+apt install build-essential tar xz-utils m4 sed
 apt install libssl-dev
 apt install golang-go
 ```
