@@ -100,6 +100,12 @@ jobs:
         run: |
            sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.11 GO=go-1.11 make tar"
 
+      - name: Prepare tar for upload
+        if: matrix.os.matrix == 'linux'
+        run: |
+           mkdir -p dist
+           cp -v ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}}/build/dist/*tar.* ./dist/
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
