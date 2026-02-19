@@ -27,8 +27,14 @@ ifeq (1,$(DEBUG))
 $(info $(LIBNAME) version:$(VERSION))
 $(info go version:$(goVERSION))
 endif
+MACHINE?=$(shell uname -m)
+ifeq (x86_64,$(MACHINE))
+MACHINE=amd64
+#$(info amd64)
+endif
 TARFLAGS?=-v --xz
-TARNAME?=$(LIBNAME)-$(goVERSION).tar.xz
+TARNAME?=$(LIBNAME)-$(goVERSION)_$(MACHINE).tar.xz
+$(info Tar name will be: $(TARNAME))
 INSTALL_ROOT?=./tmp
 DIST_DIR?=./dist/
 INSTALL_VERBOSE=
