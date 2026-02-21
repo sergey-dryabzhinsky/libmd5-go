@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   build_wheels:
-    name: Build lib
+    name: Build lib release
     runs-on: ${{ matrix.os.runs-on }}
     strategy:
       fail-fast: false
