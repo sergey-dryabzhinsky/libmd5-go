@@ -53,6 +53,7 @@ func libmd5_go_ts__MD5_update(inputText *C.char) C.int {
 	goText := C.GoString(inputText)
 	commonL.Lock()
 	if commonHasher == nil {
+		commonL.Unlock()
 		result := C.int(0)
 		return result
 	}
@@ -64,6 +65,11 @@ func libmd5_go_ts__MD5_update(inputText *C.char) C.int {
 
 //export libmd5_go_nts__MD5_finish
 func libmd5_go_nts__MD5_finish() *C.char {
+
+	if commonHasher == nil {
+		result := C.CString("")
+		return result
+	}
 	// Get the final hash as a byte slice. Passing nil appends the hash to an empty slice.
 	hashInBytes := commonHasher.Sum(nil)
 
@@ -74,6 +80,11 @@ func libmd5_go_nts__MD5_finish() *C.char {
 
 //export libmd5_go_ts__MD5_finish
 func libmd5_go_ts__MD5_finish() *C.char {
+
+	if commonHasher == nil {
+		result := C.CString("")
+		return result
+	}
 	// Get the final hash as a byte slice. Passing nil appends the hash to an empty slice.
 	commonL.Lock()
 	hashInBytes := commonHasher.Sum(nil)
@@ -96,6 +107,65 @@ func libmd5_go__MD5_hexdigest(inputText *C.char) *C.char {
 	// Convert the byte slice to a hex string
 	gohexDigest := hex.EncodeToString(hashInBytes)
 	return C.CString(gohexDigest)
+}
+
+//export libmd5_go_nts__MD5File_update
+func libmd5_go_nts__MD5File_update(fullPath *C.char) C.int {
+
+	if commonHasher == nil {
+		result := C.int(0) // @todo: return error code to get error description
+		return result
+	}
+	goFullPath := C.GoString(fullPath)
+
+	// Open the file
+	file, err := os.Open(goFullPath)
+	if err != nil {
+		result := C.int(0)
+		return result
+	}
+	// Ensure the file is closed after the function returns
+	defer file.Close()
+
+	// Copy the file content to the hash object.
+	// The hash object implements the io.Writer interface.
+	if _, err := io.Copy(commonHasher, file); err != nil {
+		result := C.int(0)
+		return result
+	}
+	result := C.int(1)
+	return result
+}
+
+//export libmd5_go_ts__MD5File_update
+func libmd5_go_ts__MD5File_update(fullPath *C.char) C.int {
+
+	if commonHasher == nil {
+		result := C.int(0)
+		return result
+	}
+	goFullPath := C.GoString(fullPath)
+
+	// Open the file
+	file, err := os.Open(goFullPath)
+	if err != nil {
+		result := C.int(0)
+		return result
+	}
+	// Ensure the file is closed after the function returns
+	defer file.Close()
+
+	// Copy the file content to the hash object.
+	// The hash object implements the io.Writer interface.
+	commonL.Lock()
+	if _, err := io.Copy(commonHasher, file); err != nil {
+		commonL.Unlock()
+		result := C.int(0)
+		return result
+	}
+	commonL.Unlock()
+	result := C.int(1)
+	return result
 }
 
 //export libmd5_go__MD5File_hexdigest

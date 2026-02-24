@@ -46,6 +46,8 @@ But more memory consuming.
 
 - **libmd5_go__MD5_hexdigest**(char* text): Return hexed-string with md5 digest.
 
+  *Deprecated*
+
   params:
   - text (`char *`): input string
 
@@ -53,7 +55,26 @@ But more memory consuming.
 
   *since*: 0.0.2
 
+- **libmd5_go_nts__MD5File_update**(char* fullPath): Returns 0/1
+
+  *Not Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `int` 1 - if md5 updated and file readable; 0 - if not updated or file not readable
+
+- **libmd5_go_ts__MD5File_update**(char* fullPath): Returns 0/1
+
+  *Thread Safe* possibly
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `int` 1 - if md5 updated and file readable; 0 - if not updated or file not readable
+
 - **libmd5_go__MD5File_hexdigest**(char* fullPath): Return hexed-string with md5 digest of contents of the file.
+
+  *Deprecated*
 
   params:
   - fullPath (`char *`): input full path to file as string

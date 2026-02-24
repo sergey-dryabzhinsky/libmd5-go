@@ -79,7 +79,7 @@ test-lib-speed: lib-link
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib-speed -I. -L. -l$(ldLIBNAME) test-lib-speed.c
 
 test-lib-file: lib
-	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib-file -I. -L. $(ldLIBNAME) test-lib-file.c
+	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib-file -I. -L. -l$(ldLIBNAME) test-lib-file.c
 
 test-crypto-speed: lib
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-crypto-speed  -lcrypto test-crypto-speed.c
