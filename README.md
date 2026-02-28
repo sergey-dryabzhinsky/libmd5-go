@@ -55,6 +55,80 @@ But more memory consuming.
 
   *since*: 0.0.2
 
+- **libmd5_go_nts__MD5_init**(void): void
+
+  *Not Thread Safe*
+
+ (Re)Initialize md5 context.
+
+  params:
+  - none
+
+  return:
+
+  *since*: 0.0.7
+
+- **libmd5_go_nts__MD5_finish**(void):
+
+  *Not Thread Safe*
+
+  Closes md5 context. Returns md5 digest as hex-digits string.
+
+  params:
+  - none
+
+  return: `char *`:  String with hexed digest, if error occured - empty string.
+
+  *since*: 0.0.7
+
+- **libmd5_go_ts__MD5_finish**(void)
+
+  *Thread Safe*
+
+  Closes md5 context. Returns md5 digest as hex-digits string.
+
+  params:
+  - none
+
+  return: `char *`:  String with hexed digest, if error occured - empty string.
+
+  *since*: 0.0.7
+
+- **libmd5_go_ts__MD5_init**(void): void
+
+  *Thread Safe*
+
+ (Re)Initialize md5 context.
+
+  params:
+  - none
+
+  return: none
+
+  *since*: 0.0.7
+
+- **libmd5_go_nts__MD5_update**(char* inputText): Returns 0/1
+
+  *Not Thread Safe*
+
+  params:
+  - inputText (`char *`): input full path to file as string
+
+  return: `int` 1 - if md5 updated; 0 - if not updated or some error happens
+
+  *since*: 0.0.7
+
+- **libmd5_go_ts__MD5_update**(char* inputText): Returns 0/1
+
+  *Thread Safe*
+
+  params:
+  - inputText (`char *`): input full path to file as string
+
+  return: `int` 1 - if md5 updated; 0 - if not updated or some error happens
+
+  *since*: 0.0.7
+
 - **libmd5_go_nts__MD5File_update**(char* fullPath): Returns 0/1
 
   *Not Thread Safe*
@@ -64,9 +138,23 @@ But more memory consuming.
 
   return: `int` 1 - if md5 updated and file readable; 0 - if not updated or file not readable
 
+  *since*: 0.0.7
+
+- **libmd5_go_ts__MD5File_update**(char* fullPath): Returns 0/1
+
+  *Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `int` 1 - if md5 updated and file readable; 0 - if not updated or file not readable
+
+  *since*: 0.0.7
+
 - **libmd5_go_ts__MD5File_update**(char* fullPath): Returns 0/1
 
   *Thread Safe* possibly
+
   params:
   - fullPath (`char *`): input full path to file as string
 
@@ -84,6 +172,8 @@ But more memory consuming.
   *since*: 0.0.5
 
 - **libmd5_go__MD5_digest**(char* text): Return non hexed(byte)-string with md5 digest.
+
+  *Deprecated*
 
   params:
   - text (`char *`): input string
