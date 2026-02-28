@@ -6,7 +6,6 @@ import "C"
 import (
 	"crypto/md5"
 	"encoding/hex"
-	"errors"
 	"io"
 	"hash"
 	"os"
@@ -163,7 +162,7 @@ func libmd5_go_nts__MD5File_update(fullPath *C.char) C.int {
 	// Open the file
 	file, err := os.Open(goFullPath)
 	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
+		if err == os.ErrNotExist {
 			lastErrorCode = ERRNO_OS_FILE_NOT_EXISTS
 		}
 		lastErrorCode = ERRNO_OS_FILE_NOT_READABLE
@@ -200,7 +199,7 @@ func libmd5_go_ts__MD5File_update(fullPath *C.char) C.int {
 	// Open the file
 	file, err := os.Open(goFullPath)
 	if err != nil {
-		if errors.Is(err, os.ErrNotExist) {
+		if err == os.ErrNotExist {
 			lastErrorCode = ERRNO_OS_FILE_NOT_EXISTS
 		}
 		lastErrorCode = ERRNO_OS_FILE_NOT_READABLE
