@@ -1,4 +1,4 @@
-name: Build lib on Ubuntu16 x86 by golang-1.26
+name: Build lib on Ubuntu16 amd64 by golang-1.24
 
 on: [push, pull_request]
 
@@ -14,13 +14,13 @@ jobs:
       fail-fast: false
       matrix:
         os:
-          - name: Ubuntu 24+16 x86 golang-bin-1.26
+          - name: Ubuntu 24+16 amd64 golang-bin-1.24
             runs-on: ubuntu-latest
             matrix: linux
-            arch: i386
+            arch: amd64
             release: xenial
             mirror: http://azure.archive.ubuntu.com/ubuntu
-            gopkg: golang-bin-1.26-go
+            gopkg: golang-bin-1.24-go
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -86,19 +86,19 @@ jobs:
         if: matrix.os.matrix == 'linux'
         run: |
            echo GO;
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.26 go-1.26 version"
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.24 go-1.24 version"
            echo GO-ENV;
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.26 go-1.26 env"
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.24 go-1.24 env"
 
       - name: Make lib
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.26 GO=go-1.26 make lib && ls libmd5-go* -lh"
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.24 GO=go-1.24 make lib && ls libmd5-go* -lh"
 
       - name: Make tar
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.26 GO=go-1.26 make tar"
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.24 GO=go-1.24 make tar"
 
       - name: Prepare tar for upload
         if: matrix.os.matrix == 'linux'
@@ -109,5 +109,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: go-1.26-x86-build
+          name: go-1.24-amd64-build
           path: dist/

@@ -1,6 +1,9 @@
-name: Build lib on Ubuntu16 x86 by golang-1.26
+name: Build lib release on Ubuntu16 amd64 by golang-1.6
 
-on: [push, pull_request]
+on:
+  push:
+    tags:
+      - 'v*.*.*' # Triggers when a tag starting with 'v' is pushed
 
 concurrency:
   group: ${{ github.ref }}-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref == format('refs/heads/{0}', github.event.repository.default_branch) && github.sha || '' }}
@@ -8,19 +11,19 @@ concurrency:
 
 jobs:
   build_wheels:
-    name: Build lib
+    name: Build lib release
     runs-on: ${{ matrix.os.runs-on }}
     strategy:
       fail-fast: false
       matrix:
         os:
-          - name: Ubuntu 24+16 x86 golang-bin-1.26
+          - name: Ubuntu 24+16 amd64 golang-bin-1.6
             runs-on: ubuntu-latest
             matrix: linux
-            arch: i386
+            arch: amd64
             release: xenial
             mirror: http://azure.archive.ubuntu.com/ubuntu
-            gopkg: golang-bin-1.26-go
+            gopkg: golang-bin-1.6-go
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -66,7 +69,7 @@ jobs:
       - name: Pepare dev tools for ${{matrix.os.gopkg}} ${{matrix.os.arch}}
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt install  --no-install-recommends -y gcc pkg-config ${{matrix.os.gopkg}} build-essential tar xz-utils m4 binutils-2-35
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /usr/bin/apt install  --no-install-recommends -y gcc pkg-config ${{matrix.os.gopkg}} build-essential m4
 
       - name: Pepare dev files
         if: matrix.os.matrix == 'linux'
@@ -86,19 +89,19 @@ jobs:
         if: matrix.os.matrix == 'linux'
         run: |
            echo GO;
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.26 go-1.26 version"
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.6 go-1.6 version"
            echo GO-ENV;
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.26 go-1.26 env"
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "GOROOT=/opt/golang-1.6 go-1.6 env"
 
       - name: Make lib
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.26 GO=go-1.26 make lib && ls libmd5-go* -lh"
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.6 GO=go-1.6 make lib && ls libmd5-go* -lh"
 
       - name: Make tar
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.26 GO=go-1.26 make tar"
+           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.6 GO=go-1.6 make tar"
 
       - name: Prepare tar for upload
         if: matrix.os.matrix == 'linux'
@@ -109,5 +112,13 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: go-1.26-x86-build
+          name: go-1.06-x86-build
           path: dist/
+
+      - name: Create Release and Upload Assets
+        # This uses a community action for creating and uploading to a release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/*86*.tar.xz
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # The default GITHUB_TOKEN has sufficient permissions
