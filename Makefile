@@ -75,6 +75,9 @@ lib-link: lib
 test-lib: lib-link
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib -I. -L. -l$(ldLIBNAME) test-lib.c
 
+test-lib_version: lib-link
+	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib_version -I. -L. -l$(ldLIBNAME) test-lib_version.c
+
 test-lib-speed: lib-link
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib-speed -I. -L. -l$(ldLIBNAME) test-lib-speed.c
 
@@ -86,10 +89,12 @@ test-crypto-speed: lib
 
 tests: \
  test-lib \
+ test-lib_version \
  test-lib-speed \
  test-lib-file \
  test-crypto-speed
 	 export LD_LIBRARY_PATH=.
+	./test-lib_version
 	./test-lib
 	./test-lib-file
 	md5sum LICENSE
@@ -98,7 +103,7 @@ tests: \
 
 clean:
 	rm -f  $(LIBNAME)$(LIBEXT)* $(LIBNAME).h constants.h $(ldLIBNAME).pc lib-link
-	rm -f test-lib test-lib-speed test-crypto-speed test-lib-file
+	rm -f test-lib test-lib-speed test-crypto-speed test-lib-file test-lib_version
 	rm -rf tmp dist
 
 all: test_lib
