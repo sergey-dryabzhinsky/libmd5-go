@@ -19,7 +19,7 @@ LDFLAGS?=-Wl,-s
 LIBEXT?=.so
 LIBNAME=libmd5-go
 ldLIBNAME=md5-go
-VERSION?=0.0.7
+VERSION?=0.0.8
 goVERSION?=$(shell $(GO) version | cut -d' ' -f3)
 GOLDFLAGS?=-ldflags="-s -w" -ldflags "-X main.VERSION=$(VERSION)"
 #VERSION=$(shell grep 'const VERSION' $(LIBNAME).go | cut -d= -f2|tr -d '"')
