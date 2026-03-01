@@ -85,7 +85,7 @@ But more memory consuming.
 
   *Not Thread Safe*
 
- (Re)Initialize md5 context.
+  (Re)Initialize md5 context.
 
   params:
   - none
