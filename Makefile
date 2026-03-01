@@ -111,7 +111,7 @@ tests: \
 	./test-crypto-speed
 
 clean:
-	rm -f  $(LIBNAME)$(LIBEXT)* $(LIBNAME).h constants.h $(ldLIBNAME).pc lib-link
+	rm -f $(LIBNAME)$(LIBEXT)* $(LIBNAME)$(staticLIBEXT) $(LIBNAME).h constants.h $(ldLIBNAME).pc lib-link
 	rm -f test-lib test-lib-speed test-crypto-speed test-lib-file \
 	 test-lib_version \
 	test-lib_error-init
@@ -125,6 +125,7 @@ install: lib lib-link
 	install $(INSTALL_VERBOSE) -d $(INSTALL_ROOT)/$(PREFIX)/$(LIBS_DIR)/pkgconfig
 	install $(INSTALL_VERBOSE) $(ldLIBNAME).pc $(INSTALL_ROOT)/$(PREFIX)/$(LIBS_DIR)/pkgconfig
 	install $(INSTALL_VERBOSE) $(LIBNAME)$(LIBEXT)* $(INSTALL_ROOT)/$(PREFIX)/$(LIBS_DIR)
+	install $(INSTALL_VERBOSE) $(LIBNAME)$(staticLIBEXT) $(INSTALL_ROOT)/$(PREFIX)/$(LIBS_DIR)
 
 tar: install
 	mkdir -p $(DIST_DIR)
