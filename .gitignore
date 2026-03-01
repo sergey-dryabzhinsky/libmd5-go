@@ -1,5 +1,6 @@
 # generated files
 /libmd5-go.so*
+/libmd5-go.a
 /lib/libmd5-go.so*
 /libmd5-go.h
 /include/libmd5-go.h
