@@ -122,6 +122,7 @@ all: test_lib
 install: lib lib-link
 	install $(INSTALL_VERBOSE) -d $(INSTALL_ROOT)/$(PREFIX)/$(INCLUDES_DIR)
 	install $(INSTALL_VERBOSE) $(LIBNAME).h $(INSTALL_ROOT)/$(PREFIX)/$(INCLUDES_DIR)
+	install $(INSTALL_VERBOSE) constants.h $(INSTALL_ROOT)/$(PREFIX)/$(INCLUDES_DIR)
 	install $(INSTALL_VERBOSE) -d $(INSTALL_ROOT)/$(PREFIX)/$(LIBS_DIR)/pkgconfig
 	install $(INSTALL_VERBOSE) $(ldLIBNAME).pc $(INSTALL_ROOT)/$(PREFIX)/$(LIBS_DIR)/pkgconfig
 	install $(INSTALL_VERBOSE) $(LIBNAME)$(LIBEXT)* $(INSTALL_ROOT)/$(PREFIX)/$(LIBS_DIR)
