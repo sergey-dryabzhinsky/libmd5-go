@@ -1,5 +1,5 @@
 # libmd5-go
-Last version: 0.0.6
+Last version: 0.0.8
 
 Pure md5 function nothing else. Exported from golang runtime. And some examples of code.
 
@@ -25,7 +25,7 @@ GOROOT=/path/to/golang/installdir GO=go-x.y make lib
 ```
 
 ## Reason
-Not found library with only one function, so I tryed by myself.
+Not found library with only one functionality, so I tryed make it by myself.
 
 ## Result
 Slightly faster file reading than `md5sum` command.
@@ -55,6 +55,32 @@ But more memory consuming.
 
   *since*: 0.0.2
 
+- **libmd5_go_nts__MD5_getLastErrorCode**(void): int
+
+  *Not Thread Safe*
+
+  Returns code of last error happened.
+
+  params:
+  - none
+
+  return: `int` internal code number
+
+  *since*: 0.0.8
+
+- **libmd5_go_nts__MD5_getErrorDescription**(int errno):
+
+  *Not Thread Safe*
+
+  Returns description of error by its code number.
+
+  params:
+  - `int` errno: error internal code number.
+
+  return: `char*` internal error description.
+
+  *since*: 0.0.8
+
 - **libmd5_go_nts__MD5_init**(void): void
 
   *Not Thread Safe*
@@ -68,29 +94,61 @@ But more memory consuming.
 
   *since*: 0.0.7
 
-- **libmd5_go_nts__MD5_finish**(void):
+- **libmd5_go_nts__MD5_finish**(int and_flush):
 
   *Not Thread Safe*
 
   Closes md5 context. Returns md5 digest as hex-digits string.
 
   params:
-  - none
+  - and_flush: `int`: set internal hasher object to null so it need to be inited again. Values 0/1 accepted.
+    *since*: 0.0.8
 
   return: `char *`:  String with hexed digest, if error occured - empty string.
 
   *since*: 0.0.7
 
-- **libmd5_go_ts__MD5_finish**(void)
+- **libmd5_go_nts__MD5_finishDefault**(void):
+
+  *Not Thread Safe*
+
+  Closes md5 context. Returns md5 digest as hex-digits string.
+
+  *alias*: libmd5_go_nts__MD5_finish(1)
+
+  params:
+  -none
+
+  return: `char *`:  String with hexed digest, if error occured - empty string.
+
+  *since*: 0.0.8
+
+- **libmd5_go_ts__MD5_finish**(int and_flush)
 
   *Thread Safe*
 
   Closes md5 context. Returns md5 digest as hex-digits string.
 
   params:
-  - none
+  - and_flush: `int`: set internal hasher object to null so it need to be inited again. Values 0/1 accepted.
+    *since*: 0.0.8
 
   return: `char *`:  String with hexed digest, if error occured - empty string.
+
+- **libmd5_go_ts__MD5_finishDefault**(void):
+
+  *Thread Safe*
+
+  Closes md5 context. Returns md5 digest as hex-digits string.
+
+  *alias*: libmd5_go_ts__MD5_finish(1)
+
+  params:
+  -none
+
+  return: `char *`:  String with hexed digest, if error occured - empty string.
+
+  *since*: 0.0.8
 
   *since*: 0.0.7
 
