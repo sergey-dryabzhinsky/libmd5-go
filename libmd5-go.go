@@ -1,5 +1,6 @@
 package main
 
+// #include <stdbool.h>
 // #include "constants.h"
 // #include <stdlib.h>
 import "C"
@@ -23,7 +24,7 @@ const ERRNO_OS_FILE_NOT_READABLE = 403
 var VERSION string
 var lastErrorCode int = ERRNO_NO_ERROR
 var commonL sync.Mutex
-var commonHasher hash.Hash
+var commonHasher hash.Hash = nil
 
 //export libmd5_go_nts__MD5_init
 func libmd5_go_nts__MD5_init() {
@@ -50,25 +51,24 @@ func libmd5_go_nts__getLastErrorCode() C.int {
 	return result
 }
 
-//export libmd5_go_nts__getLastErrorStr
-func libmd5_go_nts__getLastErrorStr() *C.char {
+//export libmd5_go_nts__getErrorDescription
+func libmd5_go_nts__getErrorDescription(errno C.int) *C.char {
 	result := C.CString("No errors happened")
-	if (lastErrorCode == ERRNO_NO_ERROR){
+	if (errno == ERRNO_NO_ERROR){
 		// pass
 	}
-	if (lastErrorCode == ERRNO_GENERIC_ERROR){
+	if (errno == ERRNO_GENERIC_ERROR){
 		result = C.CString("Some generic error happend")
 	}
-	if (lastErrorCode == ERRNO_MD5_CTX_NOT_INITED){
+	if (errno == ERRNO_MD5_CTX_NOT_INITED){
 		result = C.CString("Init md5 context first!")
 	}
-	if (lastErrorCode == ERRNO_OS_FILE_NOT_EXISTS){
+	if (errno == ERRNO_OS_FILE_NOT_EXISTS){
 		result = C.CString("File by given path not exists! Or not readable!")
 	}
-	if (lastErrorCode == ERRNO_OS_FILE_NOT_READABLE){
+	if (errno == ERRNO_OS_FILE_NOT_READABLE){
 		result = C.CString("File by given path maybe not readable!")
 	}
-	lastErrorCode = ERRNO_NO_ERROR
 	return result
 }
 
@@ -101,9 +101,14 @@ func libmd5_go_ts__MD5_update(inputText *C.char) C.int {
 	return result
 }
 
-//export libmd5_go_nts__MD5_finish
-func libmd5_go_nts__MD5_finish() *C.char {
+//export libmd5_go_nts__MD5_finishDefault
+func libmd5_go_nts__MD5_finishDefault() *C.char {
+	return libmd5_go_nts__MD5_finish(1)
+}
 
+
+//export libmd5_go_nts__MD5_finish
+func libmd5_go_nts__MD5_finish(and_flush C.int) *C.char {
 	if commonHasher == nil {
 		result := C.CString("")
 		lastErrorCode = ERRNO_MD5_CTX_NOT_INITED
@@ -112,14 +117,21 @@ func libmd5_go_nts__MD5_finish() *C.char {
 	// Get the final hash as a byte slice. Passing nil appends the hash to an empty slice.
 	hashInBytes := commonHasher.Sum(nil)
 
+	if and_flush == C.int(1) {
+		commonHasher = nil
+	}
 	// Convert the byte slice to a hex string
 	gohexDigest := hex.EncodeToString(hashInBytes)
 	return C.CString(gohexDigest)
 }
 
-//export libmd5_go_ts__MD5_finish
-func libmd5_go_ts__MD5_finish() *C.char {
+//export libmd5_go_ts__MD5_finishDefault
+func libmd5_go_ts__MD5_finishDefault() *C.char {
+	return libmd5_go_ts__MD5_finish(1)
+}
 
+//export libmd5_go_ts__MD5_finish
+func libmd5_go_ts__MD5_finish(and_flush C.int) *C.char {
 	if commonHasher == nil {
 		result := C.CString("")
 		lastErrorCode = ERRNO_MD5_CTX_NOT_INITED
@@ -128,6 +140,9 @@ func libmd5_go_ts__MD5_finish() *C.char {
 	// Get the final hash as a byte slice. Passing nil appends the hash to an empty slice.
 	commonL.Lock()
 	hashInBytes := commonHasher.Sum(nil)
+	if and_flush == C.int(1) {
+		commonHasher = nil
+	}
 	commonL.Unlock()
 
 	// Convert the byte slice to a hex string

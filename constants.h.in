@@ -2,6 +2,8 @@
 #define LIBMD5_GO_CONSTANTS_H
 
 #define libmd5_go_Version "VERSION"
+#define libmd5_go_MD5_DIGEST_LENGTH 16
+#define libmd5_go_MD5_HEXDIGEST_LENGTH 32
 #define libmd5_go_ERRNO_NO_ERROR 0
 #define libmd5_go_ERRNO_GENERIC_ERROR 1
 #define libmd5_go_ERRNO_MD5_CTX_NOT_INITED 100
