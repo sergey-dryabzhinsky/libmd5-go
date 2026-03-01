@@ -17,9 +17,10 @@ GOFLAGS+=-v
 endif
 LDFLAGS?=-Wl,-s
 LIBEXT?=.so
+staticLIBEXT?=.a
 LIBNAME=libmd5-go
 ldLIBNAME=md5-go
-VERSION?=0.0.8
+VERSION?=0.0.9
 goVERSION?=$(shell $(GO) version | cut -d' ' -f3)
 GOLDFLAGS?=-ldflags="-s -w" -ldflags "-X main.VERSION=$(VERSION)"
 #VERSION=$(shell grep 'const VERSION' $(LIBNAME).go | cut -d= -f2|tr -d '"')
@@ -52,6 +53,9 @@ vet:
 $(LIBNAME)$(LIBEXT): constants.h
 	$(GO) build $(GOFLAGS) $(GOLDFLAGS) -o $(LIBNAME)$(LIBEXT) -buildmode=c-shared $(LIBNAME).go
 
+$(LIBNAME)$(staticLIBEXT): constants.h
+	$(GO) build $(GOFLAGS) $(GOLDFLAGS) -o $(LIBNAME)$(staticLIBEXT) -buildmode=c-archive $(LIBNAME).go
+
 $(ldLIBNAME).pc:
 	m4 \
  -DVERSION=$(VERSION) \
@@ -65,7 +69,7 @@ constants.h:
 	sed -e 's#VERSION#$(VERSION)#g' \
 	constants.h.in > constants.h
 
-lib: $(LIBNAME)$(LIBEXT) $(ldLIBNAME).pc constants.h
+lib: $(LIBNAME)$(LIBEXT) $(LIBNAME)$(staticLIBEXT) $(ldLIBNAME).pc constants.h
 
 lib-link: lib
 	test ! -e $(LIBNAME)$(LIBEXT).$(VERSION) && mv $(LIBNAME)$(LIBEXT) $(LIBNAME)$(LIBEXT).$(VERSION)
