@@ -19,8 +19,10 @@ int main(int argc,char **argv){
   printf("last error code:%d\n", errno);
   updated = libmd5_go_nts__MD5_update("123");
   printf("md5 updated?:%d\n", updated);
-  if (updated)
+  if (updated) {
 	printf("Not inited update test FAIL\n");
+	return 1;
+  }
   else
 	printf("Not inited update test SUCCESS\n");
   errno = libmd5_go_nts__getLastErrorCode();
