@@ -33,14 +33,19 @@ ifeq (x86_64,$(MACHINE))
 MACHINE=amd64
 #$(info amd64)
 endif
-TARFLAGS?=-v --xz
-TARNAME?=$(LIBNAME)-$(goVERSION)_$(VERSION)_$(MACHINE).tar.xz
+TARFLAGS?=-v
+XZ_CMP_LEVEL=9
+TARNAME?=$(LIBNAME)-$(goVERSION)_$(VERSION)_$(MACHINE).tar
 $(info Tar name will be: $(TARNAME))
 INSTALL_ROOT?=./tmp
 DIST_DIR?=./dist/
 INSTALL_VERBOSE=
 ifeq (1,$(VERBOSE))
 INSTALL_VERBOSE=-v
+endif
+XZ_VERBOSE=
+ifeq (1,$(VERBOSE))
+XZ_VERBOSE=-v
 endif
 PREFIX?=/usr/local
 INCLUDES_DIR?=include/libmd5-go
@@ -130,4 +135,5 @@ install: lib lib-link
 
 tar: install
 	mkdir -p $(DIST_DIR)
-	cd $(INSTALL_ROOT) && tar $(TARFLAGS) -cf ../$(DIST_DIR)/$(TARNAME) .
+	cd $(INSTALL_ROOT) && tar $(TARFLAGS) -cf ../$(DIST_DIR)/$(TARNAME) . && \
+	xz $(XZ_VERBOSE) -$(XZ_CMP_LEVEL) ../$(DIST_DIR)/$(TARNAME)
