@@ -22,7 +22,7 @@ LIBNAME=libmd5-go
 ldLIBNAME=md5-go
 VERSION?=0.0.8
 goVERSION?=$(shell $(GO) version | cut -d' ' -f3)
-GOLDFLAGS?=-ldflags="-s -w" -ldflags "-X main.VERSION=$(VERSION)"
+GOLDFLAGS?=-ldflags="-s -w" -ldflags "-X main.VERSION=$(VERSION) -X main.debugMode=$(DEBUG)"
 #VERSION=$(shell grep 'const VERSION' $(LIBNAME).go | cut -d= -f2|tr -d '"')
 ifeq (1,$(DEBUG))
 $(info $(LIBNAME) version:$(VERSION))
@@ -87,6 +87,9 @@ test-lib: lib-link
 test-lib_version: lib-link
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib_version -I. -L. -l$(ldLIBNAME) test-lib_version.c
 
+test-lib_version-static: lib-link
+	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib_version-static -I. -L. $(LIBNAME).a test-lib_version.c -pthread
+
 test-lib_error-init: lib-link
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib_error-init -I. -L. -l$(ldLIBNAME) test-lib_error-init.c
 
@@ -95,6 +98,9 @@ test-lib-speed: lib-link
 
 test-lib-file: lib
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib-file -I. -L. -l$(ldLIBNAME) test-lib-file.c
+
+test-lib-file-not-exists: lib
+	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib-file-not-exists -I. -L. -l$(ldLIBNAME) test-lib_file-not-exists.c
 
 test-crypto-speed: lib
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-crypto-speed  -lcrypto test-crypto-speed.c
@@ -105,19 +111,21 @@ tests: \
  test-lib_error-init \
  test-lib-speed \
  test-lib-file \
+ test-lib-file-not-exests \
  test-crypto-speed
 	 export LD_LIBRARY_PATH=.
 	./test-lib_version
 	./test-lib_error-init
 	./test-lib
 	./test-lib-file
+	./test-lib-file-not-exists
 	md5sum LICENSE
 	./test-lib-speed
 	./test-crypto-speed
 
 clean:
 	rm -f $(LIBNAME)$(LIBEXT)* $(LIBNAME)$(staticLIBEXT) $(LIBNAME).h constants.h $(ldLIBNAME).pc lib-link
-	rm -f test-lib test-lib-speed test-crypto-speed test-lib-file \
+	rm -f test-lib test-lib-speed test-crypto-speed test-lib-file test-lib-file-not-exists \
 	 test-lib_version \
 	test-lib_error-init
 	rm -rf tmp dist

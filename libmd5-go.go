@@ -6,9 +6,12 @@ package main
 import "C"
 import (
 	"crypto/md5"
+	"fmt"
 	"encoding/hex"
 	"io"
+	"io/fs"
 	"hash"
+	"log"
 	"os"
 	"sync"
 	"runtime"
@@ -22,6 +25,7 @@ const ERRNO_OS_FILE_NOT_EXISTS = 404
 const ERRNO_OS_FILE_NOT_READABLE = 403
 
 var VERSION string
+var debugMode string
 var lastErrorCode int = ERRNO_NO_ERROR
 var commonL sync.Mutex
 var commonHasher hash.Hash = nil
@@ -174,13 +178,26 @@ func libmd5_go_nts__MD5File_update(fullPath *C.char) C.int {
 	}
 	goFullPath := C.GoString(fullPath)
 
+	if !fs.ValidPath(goFullPath) {
+		if debugMode == "1" {
+			fmt.Println("Not valid path:", goFullPath)
+		}
+		lastErrorCode = ERRNO_OS_FILE_NOT_EXISTS
+		result := C.int(0)
+		return result
+	}
 	// Open the file
 	file, err := os.Open(goFullPath)
 	if err != nil {
+		if debugMode == "1" {
+			fmt.Println("Error opening file:", err)
+			log.Fatalf("Fatal error: %T", err)
+		}
 		if err == os.ErrNotExist {
 			lastErrorCode = ERRNO_OS_FILE_NOT_EXISTS
+		} else {
+			lastErrorCode = ERRNO_OS_FILE_NOT_READABLE
 		}
-		lastErrorCode = ERRNO_OS_FILE_NOT_READABLE
 		result := C.int(0)
 		return result
 	}
@@ -190,6 +207,10 @@ func libmd5_go_nts__MD5File_update(fullPath *C.char) C.int {
 	// Copy the file content to the hash object.
 	// The hash object implements the io.Writer interface.
 	if _, err := io.Copy(commonHasher, file); err != nil {
+		if debugMode == "1" {
+			fmt.Println("Error reading file:", err)
+			log.Fatalf("Fatal error: %T", err)
+		}
 		lastErrorCode = ERRNO_GENERIC_ERROR
 		result := C.int(0)
 		return result
@@ -211,13 +232,26 @@ func libmd5_go_ts__MD5File_update(fullPath *C.char) C.int {
 	commonL.Unlock()
 	goFullPath := C.GoString(fullPath)
 
+	if !fs.ValidPath(goFullPath) {
+		if debugMode == "1" {
+			fmt.Println("Not valid path:", goFullPath)
+		}
+		lastErrorCode = ERRNO_OS_FILE_NOT_EXISTS
+		result := C.int(0)
+		return result
+	}
 	// Open the file
 	file, err := os.Open(goFullPath)
 	if err != nil {
+		if debugMode == "1" {
+			fmt.Println("Error opening file:", err)
+			log.Fatalf("Fatal error: %T", err)
+		}
 		if err == os.ErrNotExist {
 			lastErrorCode = ERRNO_OS_FILE_NOT_EXISTS
+		} else {
+			lastErrorCode = ERRNO_OS_FILE_NOT_READABLE
 		}
-		lastErrorCode = ERRNO_OS_FILE_NOT_READABLE
 		result := C.int(0)
 		return result
 	}
@@ -228,6 +262,10 @@ func libmd5_go_ts__MD5File_update(fullPath *C.char) C.int {
 	// The hash object implements the io.Writer interface.
 	commonL.Lock()
 	if _, err := io.Copy(commonHasher, file); err != nil {
+		if debugMode == "1" {
+			fmt.Println("Error reading file:", err)
+			log.Fatalf("Fatal error: %T", err)
+		}
 		commonL.Unlock()
 		result := C.int(0)
 		lastErrorCode = ERRNO_GENERIC_ERROR
