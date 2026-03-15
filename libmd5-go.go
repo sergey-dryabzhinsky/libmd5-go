@@ -114,9 +114,8 @@ func libmd5_go_nts__MD5_finishDefault() *C.char {
 //export libmd5_go_nts__MD5_finish
 func libmd5_go_nts__MD5_finish(and_flush C.int) *C.char {
 	if commonHasher == nil {
-		result := C.CString("")
 		lastErrorCode = ERRNO_MD5_CTX_NOT_INITED
-		return result
+		return nil
 	}
 	// Get the final hash as a byte slice. Passing nil appends the hash to an empty slice.
 	hashInBytes := commonHasher.Sum(nil)
@@ -137,9 +136,8 @@ func libmd5_go_ts__MD5_finishDefault() *C.char {
 //export libmd5_go_ts__MD5_finish
 func libmd5_go_ts__MD5_finish(and_flush C.int) *C.char {
 	if commonHasher == nil {
-		result := C.CString("")
 		lastErrorCode = ERRNO_MD5_CTX_NOT_INITED
-		return result
+		return nil
 	}
 	// Get the final hash as a byte slice. Passing nil appends the hash to an empty slice.
 	commonL.Lock()
@@ -283,7 +281,7 @@ func libmd5_go__MD5File_hexdigest(fullPath *C.char) *C.char {
 	// Open the file
 	file, err := os.Open(goFullPath)
 	if err != nil {
-		return C.CString("")
+		return nil
 	}
 	// Ensure the file is closed after the function returns
 	defer file.Close()
@@ -293,7 +291,7 @@ func libmd5_go__MD5File_hexdigest(fullPath *C.char) *C.char {
 	// Copy the file content to the hash object.
 	// The hash object implements the io.Writer interface.
 	if _, err := io.Copy(hash, file); err != nil {
-		return C.CString("")
+		return nil
 	}
 
 	// Get the final hash as a byte slice. Passing nil appends the hash to an empty slice.

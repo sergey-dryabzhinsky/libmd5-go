@@ -55,7 +55,7 @@ But more memory consuming.
 
   *since*: 0.0.2
 
-- **libmd5_go_nts__MD5_getLastErrorCode**(void): int
+- **libmd5_go_nts__getLastErrorCode**(void): int
 
   *Not Thread Safe*
 
@@ -68,7 +68,7 @@ But more memory consuming.
 
   *since*: 0.0.8
 
-- **libmd5_go_nts__MD5_getErrorDescription**(int errno):
+- **libmd5_go_nts__getErrorDescription**(int errno):
 
   *Not Thread Safe*
 
@@ -104,7 +104,7 @@ But more memory consuming.
   - and_flush: `int`: set internal hasher object to null so it need to be inited again. Values 0/1 accepted.
     *since*: 0.0.8
 
-  return: `char *`:  String with hexed digest, if error occured - empty string.
+  return: `char *`:  String with hexed digest, if error occured - NULL.
 
   *since*: 0.0.7
 
@@ -133,7 +133,7 @@ But more memory consuming.
   - and_flush: `int`: set internal hasher object to null so it need to be inited again. Values 0/1 accepted.
     *since*: 0.0.8
 
-  return: `char *`:  String with hexed digest, if error occured - empty string.
+  return: `char *`:  String with hexed digest, if error occured - NULL.
 
 - **libmd5_go_ts__MD5_finishDefault**(void):
 
@@ -146,7 +146,7 @@ But more memory consuming.
   params:
   -none
 
-  return: `char *`:  String with hexed digest, if error occured - empty string.
+  return: `char *`:  String with hexed digest, if error occured - NULL.
 
   *since*: 0.0.8
 
@@ -225,7 +225,7 @@ But more memory consuming.
   params:
   - fullPath (`char *`): input full path to file as string
 
-  return: `char *` String with hexed digest, if error occured - empty string returns
+  return: `char *` String with hexed digest, if error occured - NULL
 
   *since*: 0.0.5
 
@@ -236,7 +236,9 @@ But more memory consuming.
   params:
   - text (`char *`): input string
 
-  return: `char *` Bytes array, char string with digest
+  return:
+  - `char *` Bytes array, char string with digest
+  - NULL on error
 
   *since*: 0.0.2
 
