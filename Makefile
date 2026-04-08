@@ -128,6 +128,7 @@ clean:
 	rm -f test-lib test-lib-speed test-crypto-speed test-lib-file test-lib-file-not-exists \
 	 test-lib_version \
 	test-lib_error-init
+	rm -f go.mod
 	rm -rf tmp dist
 
 all: test_lib
