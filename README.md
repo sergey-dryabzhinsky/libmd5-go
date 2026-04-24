@@ -31,6 +31,11 @@ Not found library with only one functionality, so I tryed make it by myself.
 Slightly faster file reading than `md5sum` command.
 But more memory consuming.
 
+## Summary
+Better use more common and tested libcrypto.
+
+But export from golang working pretty well.
+
 ## API
 - **libmd5_go__version**(void): Returns doted version string.
 
