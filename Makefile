@@ -88,7 +88,7 @@ test-lib_version: lib-link
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib_version -I. -L. -l$(ldLIBNAME) test-lib_version.c
 
 test-lib_version-static: lib-link
-	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib_version-static -I. -L. $(LIBNAME).a test-lib_version.c -pthread
+	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib_version-static -I. -L. test-lib_version.c -l:$(LIBNAME).a -ldl -lpthread
 
 test-lib_error-init: lib-link
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib_error-init -I. -L. -l$(ldLIBNAME) test-lib_error-init.c
@@ -127,6 +127,7 @@ clean:
 	rm -f $(LIBNAME)$(LIBEXT)* $(LIBNAME)$(staticLIBEXT) $(LIBNAME).h constants.h $(ldLIBNAME).pc lib-link
 	rm -f test-lib test-lib-speed test-crypto-speed test-lib-file test-lib-file-not-exists \
 	 test-lib_version \
+	 test-lib_version-static \
 	test-lib_error-init
 	rm -f go.mod
 	rm -rf tmp dist
