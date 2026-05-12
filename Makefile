@@ -99,6 +99,18 @@ test-lib-speed: lib-link
 test-lib-file: lib
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib-file -I. -L. -l$(ldLIBNAME) test-lib-file.c
 
+test_new-func_digest: lib
+	$(CC) $(CFLAGS) $(LDFLAGS) -o test_new-func_digest -I. -L. -l$(ldLIBNAME) test_new-func_digest.c
+
+test_new-func_hexdigest: lib
+	$(CC) $(CFLAGS) $(LDFLAGS) -o test_new-func_hexdigest -I. -L. -l$(ldLIBNAME) test_new-func_hexdigest.c
+
+test_new-func_file-digest: lib
+	$(CC) $(CFLAGS) $(LDFLAGS) -o test_new-func_file-digest -I. -L. -l$(ldLIBNAME) test_new-func_file-digest.c
+
+test_new-func_file-hexdigest: lib
+	$(CC) $(CFLAGS) $(LDFLAGS) -o test_new-func_file-hexdigest -I. -L. -l$(ldLIBNAME) test_new-func_file-hexdigest.c
+
 test-lib-file-not-exists: lib
 	$(CC) $(CFLAGS) $(LDFLAGS) -o test-lib-file-not-exists -I. -L. -l$(ldLIBNAME) test-lib_file-not-exists.c
 
@@ -112,6 +124,10 @@ tests: \
  test-lib-speed \
  test-lib-file \
  test-lib-file-not-exests \
+ test_new-func_digest \
+ test_new-func_hexdigest \
+ test_new-func_file-digest \
+ test_new-func_file-hexdigest \
  test-crypto-speed
 	 export LD_LIBRARY_PATH=.
 	./test-lib_version
@@ -119,6 +135,10 @@ tests: \
 	./test-lib
 	./test-lib-file
 	./test-lib-file-not-exists
+	./test_new-func_digest
+	./test_new-func_hexdigest
+	./test_new-func_file-digest
+	./test_new-func_file-hexdigest
 	md5sum LICENSE
 	./test-lib-speed
 	./test-crypto-speed
@@ -128,6 +148,10 @@ clean:
 	rm -f test-lib test-lib-speed test-crypto-speed test-lib-file test-lib-file-not-exists \
 	 test-lib_version \
 	 test-lib_version-static \
+	 test_new-func_digest \
+	 test_new-func_hexdigest \
+	 test_new-func_file-digest \
+	 test_new-func_file-hexdigest \
 	test-lib_error-init
 	rm -f go.mod
 	rm -rf tmp dist
