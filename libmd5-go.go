@@ -105,6 +105,29 @@ func libmd5_go_ts__MD5_update(inputText *C.char) C.int {
 	return result
 }
 
+//export libmd5_go_ts__MD5_digest
+func libmd5_go_ts__MD5_digest(inputText *C.char) *C.char {
+	goText := C.GoString(inputText)
+	Hasher := md5.New()
+	io.WriteString(Hasher, goText) // Writes the string data to the hasher
+
+	// Get the final hash as a byte slice. Passing nil appends the hash to an empty slice.
+	hashInBytes := Hasher.Sum(nil)
+	return C.CString(string(hashInBytes))
+}
+
+//export libmd5_go_ts__MD5_hexdigest
+func libmd5_go_ts__MD5_hexdigest(inputText *C.char) *C.char {
+	goText := C.GoString(inputText)
+	Hasher := md5.New()
+	io.WriteString(Hasher, goText) // Writes the string data to the hasher
+
+	// Get the final hash as a byte slice. Passing nil appends the hash to an empty slice.
+	hashInBytes := Hasher.Sum(nil)
+	gohexDigest := hex.EncodeToString(hashInBytes)
+	return C.CString(gohexDigest)
+}
+
 //export libmd5_go_nts__MD5_finishDefault
 func libmd5_go_nts__MD5_finishDefault() *C.char {
 	return libmd5_go_nts__MD5_finish(1)
@@ -215,6 +238,98 @@ func libmd5_go_nts__MD5File_update(fullPath *C.char) C.int {
 	}
 	result := C.int(1)
 	return result
+}
+
+//export libmd5_go_ts__MD5File_digest
+func libmd5_go_ts__MD5File_digest(fullPath *C.char) *C.char {
+
+	Hasher := md5.New()
+	goFullPath := C.GoString(fullPath)
+
+	if !fs.ValidPath(goFullPath) {
+		if debugMode == "1" {
+			fmt.Println("Not valid path:", goFullPath)
+		}
+		lastErrorCode = ERRNO_OS_FILE_NOT_EXISTS
+		return C.CString("")
+	}
+	// Open the file
+	file, err := os.Open(goFullPath)
+	if err != nil {
+		if debugMode == "1" {
+			fmt.Println("Error opening file:", err)
+			log.Fatalf("Fatal error: %T", err)
+		}
+		if err == os.ErrNotExist {
+			lastErrorCode = ERRNO_OS_FILE_NOT_EXISTS
+		} else {
+			lastErrorCode = ERRNO_OS_FILE_NOT_READABLE
+		}
+		return C.CString("")
+	}
+	// Ensure the file is closed after the function returns
+	defer file.Close()
+
+	// Copy the file content to the hash object.
+	// The hash object implements the io.Writer interface.
+	if _, err := io.Copy(Hasher, file); err != nil {
+		if debugMode == "1" {
+			fmt.Println("Error reading file:", err)
+			log.Fatalf("Fatal error: %T", err)
+		}
+		lastErrorCode = ERRNO_GENERIC_ERROR
+		return C.CString("")
+	}
+	// Get the final hash as a byte slice. Passing nil appends the hash to an empty slice.
+	hashInBytes := Hasher.Sum(nil)
+	return C.CString(string(hashInBytes))
+}
+
+//export libmd5_go_ts__MD5File_hexdigest
+func libmd5_go_ts__MD5File_hexdigest(fullPath *C.char) *C.char {
+
+	Hasher := md5.New()
+	goFullPath := C.GoString(fullPath)
+
+	if !fs.ValidPath(goFullPath) {
+		if debugMode == "1" {
+			fmt.Println("Not valid path:", goFullPath)
+		}
+		lastErrorCode = ERRNO_OS_FILE_NOT_EXISTS
+		return C.CString("")
+	}
+	// Open the file
+	file, err := os.Open(goFullPath)
+	if err != nil {
+		if debugMode == "1" {
+			fmt.Println("Error opening file:", err)
+			log.Fatalf("Fatal error: %T", err)
+		}
+		if err == os.ErrNotExist {
+			lastErrorCode = ERRNO_OS_FILE_NOT_EXISTS
+		} else {
+			lastErrorCode = ERRNO_OS_FILE_NOT_READABLE
+		}
+		return C.CString("")
+	}
+	// Ensure the file is closed after the function returns
+	defer file.Close()
+
+	// Copy the file content to the hash object.
+	// The hash object implements the io.Writer interface.
+	if _, err := io.Copy(Hasher, file); err != nil {
+		if debugMode == "1" {
+			fmt.Println("Error reading file:", err)
+			log.Fatalf("Fatal error: %T", err)
+		}
+		lastErrorCode = ERRNO_GENERIC_ERROR
+		return C.CString("")
+	}
+	// Get the final hash as a byte slice. Passing nil appends the hash to an empty slice.
+	hashInBytes := Hasher.Sum(nil)
+	// Convert the byte slice to a hex string
+	gohexDigest := hex.EncodeToString(hashInBytes)
+	return C.CString(gohexDigest)
 }
 
 //export libmd5_go_ts__MD5File_update

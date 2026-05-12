@@ -214,6 +214,50 @@ But export from golang working pretty well.
 
   *since*: 0.0.7
 
+- **libmd5_go_ts__MD5_digest**(char* fullPath): Returns string with raw 16 byte char digest value
+
+  *Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `char *` 16 byte raw char digest value or 0-length string if error occured.
+
+  *since*: 0.0.9
+
+- **libmd5_go_ts__MD5_hexdigest**(char* fullPath): Returns string with 32 byte char hex-digest value
+
+  *Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `char *` 32 byte char hex-digest value or 0-length string if error occured.
+
+  *since*: 0.0.9
+
+- **libmd5_go_ts__MD5File_digest**(char* fullPath): Returns string with raw 16 byte char digest value
+
+  *Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `char *` 16 byte raw char digest value or 0-length string if error occured.
+
+  *since*: 0.0.9
+
+- **libmd5_go_ts__MD5File_hexdigest**(char* fullPath): Returns string with 32 byte char hex-digest value
+
+  *Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `char *` 32 byte char hex-digest value or 0-length string if error occured.
+
+  *since*: 0.0.9
+
 - **libmd5_go_ts__MD5File_update**(char* fullPath): Returns 0/1
 
   *Thread Safe* possibly
