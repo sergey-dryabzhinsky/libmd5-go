@@ -7,7 +7,7 @@ Pure md5 function nothing else. Exported from golang runtime. And some examples 
 To compile library and examples you will need to install
 - c99 capable compiler (for now only gcc >=4.8 supported)
 - openssl >=1.0 ( libcrypto )
-- golang >=1.6
+- golang >=1.16 ( io/fs )
 
 ## Prepare system
 Instructions for Debian/Ubuntu like systems:
@@ -213,6 +213,50 @@ But export from golang working pretty well.
   return: `int` 1 - if md5 updated and file readable; 0 - if not updated or file not readable
 
   *since*: 0.0.7
+
+- **libmd5_go_ts__MD5_digest**(char* fullPath): Returns string with raw 16 byte char digest value
+
+  *Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `char *` 16 byte raw char digest value or 0-length string if error occured.
+
+  *since*: 0.0.9
+
+- **libmd5_go_ts__MD5_hexdigest**(char* fullPath): Returns string with 32 byte char hex-digest value
+
+  *Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `char *` 32 byte char hex-digest value or 0-length string if error occured.
+
+  *since*: 0.0.9
+
+- **libmd5_go_ts__MD5File_digest**(char* fullPath): Returns string with raw 16 byte char digest value
+
+  *Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `char *` 16 byte raw char digest value or 0-length string if error occured.
+
+  *since*: 0.0.9
+
+- **libmd5_go_ts__MD5File_hexdigest**(char* fullPath): Returns string with 32 byte char hex-digest value
+
+  *Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `char *` 32 byte char hex-digest value or 0-length string if error occured.
+
+  *since*: 0.0.9
 
 - **libmd5_go_ts__MD5File_update**(char* fullPath): Returns 0/1
 
