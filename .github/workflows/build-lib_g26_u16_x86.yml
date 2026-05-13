@@ -98,7 +98,7 @@ jobs:
       - name: Make tar
         if: matrix.os.matrix == 'linux'
         run: |
-           sudo chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.26 GO=go-1.26 make tar"
+           sudo linux32 chroot ./ubuntu-${{matrix.os.release}}-${{matrix.os.arch}} /bin/bash -c "cd /build && GOROOT=/opt/golang-1.26 GO=go-1.26 make tar"
 
       - name: Prepare tar for upload
         if: matrix.os.matrix == 'linux'
