@@ -29,9 +29,10 @@ $(info $(LIBNAME) version:$(VERSION))
 $(info go version:$(goVERSION))
 endif
 MACHINE?=$(shell uname -m)
+$(info machine is: $(MACHINE))
 ifeq (x86_64,$(MACHINE))
 MACHINE=amd64
-#$(info amd64)
+$(info it is amd64)
 endif
 TARFLAGS?=-v
 XZ_CMP_LEVEL=9
