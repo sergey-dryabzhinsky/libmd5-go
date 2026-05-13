@@ -1,7 +1,7 @@
 # libmd5-go
-Last version: 0.0.8
+Last version: 0.0.9
 
-Pure md5 function nothing else. Exported from golang runtime. And some examples of code.
+Pure md5 function use nothing else. Exported from golang runtime. And some examples of code.
 
 ## Requirements
 To compile library and examples you will need to install
