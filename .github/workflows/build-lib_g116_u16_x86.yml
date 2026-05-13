@@ -20,7 +20,7 @@ jobs:
             arch: i386
             release: xenial
             mirror: http://azure.archive.ubuntu.com/ubuntu
-            gopkg: golang-bin-1.16-go golang-bin-1.16-pkg
+            gopkg: golang-bin-1.16-go
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
