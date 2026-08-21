@@ -1,0 +1,265 @@
+# libmd5-go API description
+Last version: 0.0.9
+
+Pure md5 function use nothing else. Exported from golang runtime. And some examples of code.
+
+## API
+- **libmd5_go__version**(void): Returns doted version string.
+
+  return: `* char`
+
+  *since*: 0.0.1
+
+- **libmd5_go__version_go**(void): Returns version string of go rutime used.
+
+  return: `* char`
+
+  *since*: 0.0.4
+
+- **libmd5_go__MD5_hexdigest**(char* text): Return hexed-string with md5 digest.
+
+  *Deprecated*
+
+  params:
+  - text (`char *`): input string
+
+  return: `char *` String with hexed digest
+
+  *since*: 0.0.2
+
+- **libmd5_go_nts__getLastErrorCode**(void): int
+
+  *Not Thread Safe*
+
+  Returns code of last error happened.
+
+  params:
+  - none
+
+  return: `int` internal code number
+
+  *since*: 0.0.8
+
+- **libmd5_go_nts__getErrorDescription**(int errno):
+
+  *Not Thread Safe*
+
+  Returns description of error by its code number.
+
+  params:
+  - `int` errno: error internal code number.
+
+  return: `char*` internal error description.
+
+  *since*: 0.0.8
+
+- **libmd5_go_nts__MD5_init**(void): void
+
+  *Not Thread Safe*
+
+  (Re)Initialize md5 context.
+
+  params:
+  - none
+
+  return:
+
+  *since*: 0.0.7
+
+- **libmd5_go_nts__MD5_finish**(int and_flush):
+
+  *Not Thread Safe*
+
+  Closes md5 context. Returns md5 digest as hex-digits string.
+
+  params:
+  - and_flush: `int`: set internal hasher object to null so it need to be inited again. Values 0/1 accepted.
+    *since*: 0.0.8
+
+  return: `char *`:  String with hexed digest, if error occured - NULL.
+
+  *since*: 0.0.7
+
+- **libmd5_go_nts__MD5_finishDefault**(void):
+
+  *Not Thread Safe*
+
+  Closes md5 context. Returns md5 digest as hex-digits string.
+
+  *alias*: libmd5_go_nts__MD5_finish(1)
+
+  params:
+  -none
+
+  return: `char *`:  String with hexed digest, if error occured - empty string.
+
+  *since*: 0.0.8
+
+- **libmd5_go_ts__MD5_finish**(int and_flush)
+
+  *Thread Safe*
+
+  Closes md5 context. Returns md5 digest as hex-digits string.
+
+  params:
+  - and_flush: `int`: set internal hasher object to null so it need to be inited again. Values 0/1 accepted.
+    *since*: 0.0.8
+
+  return: `char *`:  String with hexed digest, if error occured - NULL.
+
+- **libmd5_go_ts__MD5_finishDefault**(void):
+
+  *Thread Safe*
+
+  Closes md5 context. Returns md5 digest as hex-digits string.
+
+  *alias*: libmd5_go_ts__MD5_finish(1)
+
+  params:
+  -none
+
+  return: `char *`:  String with hexed digest, if error occured - NULL.
+
+  *since*: 0.0.8
+
+  *since*: 0.0.7
+
+- **libmd5_go_ts__MD5_init**(void): void
+
+  *Thread Safe*
+
+ (Re)Initialize md5 context.
+
+  params:
+  - none
+
+  return: none
+
+  *since*: 0.0.7
+
+- **libmd5_go_nts__MD5_update**(char* inputText): Returns 0/1
+
+  *Not Thread Safe*
+
+  params:
+  - inputText (`char *`): input full path to file as string
+
+  return: `int` 1 - if md5 updated; 0 - if not updated or some error happens
+
+  *since*: 0.0.7
+
+- **libmd5_go_ts__MD5_update**(char* inputText): Returns 0/1
+
+  *Thread Safe*
+
+  params:
+  - inputText (`char *`): input full path to file as string
+
+  return: `int` 1 - if md5 updated; 0 - if not updated or some error happens
+
+  *since*: 0.0.7
+
+- **libmd5_go_nts__MD5File_update**(char* fullPath): Returns 0/1
+
+  *Not Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `int` 1 - if md5 updated and file readable; 0 - if not updated or file not readable
+
+  *since*: 0.0.7
+
+- **libmd5_go_ts__MD5File_update**(char* fullPath): Returns 0/1
+
+  *Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `int` 1 - if md5 updated and file readable; 0 - if not updated or file not readable
+
+  *since*: 0.0.7
+
+- **libmd5_go_ts__MD5_digest**(char* fullPath): Returns string with raw 16 byte char digest value
+
+  *Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `char *` 16 byte raw char digest value or 0-length string if error occured.
+
+  *since*: 0.0.9
+
+- **libmd5_go_ts__MD5_hexdigest**(char* fullPath): Returns string with 32 byte char hex-digest value
+
+  *Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `char *` 32 byte char hex-digest value or 0-length string if error occured.
+
+  *since*: 0.0.9
+
+- **libmd5_go_ts__MD5File_digest**(char* fullPath): Returns string with raw 16 byte char digest value
+
+  *Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `char *` 16 byte raw char digest value or 0-length string if error occured.
+
+  *since*: 0.0.9
+
+- **libmd5_go_ts__MD5File_hexdigest**(char* fullPath): Returns string with 32 byte char hex-digest value
+
+  *Thread Safe*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `char *` 32 byte char hex-digest value or 0-length string if error occured.
+
+  *since*: 0.0.9
+
+- **libmd5_go_ts__MD5File_update**(char* fullPath): Returns 0/1
+
+  *Thread Safe* possibly
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `int` 1 - if md5 updated and file readable; 0 - if not updated or file not readable
+
+- **libmd5_go__MD5File_hexdigest**(char* fullPath): Return hexed-string with md5 digest of contents of the file.
+
+  *Deprecated*
+
+  params:
+  - fullPath (`char *`): input full path to file as string
+
+  return: `char *` String with hexed digest, if error occured - NULL
+
+  *since*: 0.0.5
+
+- **libmd5_go__MD5_digest**(char* text): Return non hexed(byte)-string with md5 digest.
+
+  *Deprecated*
+
+  params:
+  - text (`char *`): input string
+
+  return:
+  - `char *` Bytes array, char string with digest
+  - NULL on error
+
+  *since*: 0.0.2
+
+- **libmd5_go__FreeResult**(char* ptr): frees memory allocated for md5 degest earlier.
+
+  return: `void`
+
+  *since*: 0.0.3
